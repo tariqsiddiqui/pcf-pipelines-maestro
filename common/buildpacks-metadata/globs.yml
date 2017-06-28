@@ -1,0 +1,8 @@
+# This file contains information about the "globs" parameter for each buildpack (when applicable)
+# This is used in the buildpacks upgrade pipeline, to add to the corresponding pivnet resource,
+# so only the specific file for the buildpack is downloaded.
+# Example: the Java buildpack in pivnet returns two files: java_buildpack and java_buildpack_offline
+#          For the offline buildpack, in order to download the correct file,
+#          a globs config "*offline*" needs to be added to the "get" for the corresponding
+#          resource entry in the buildpacks upgrade pipeline.
+java_buildpack_offline: "*offline*"

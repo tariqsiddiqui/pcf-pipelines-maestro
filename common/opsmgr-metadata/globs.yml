@@ -1,0 +1,8 @@
+# This file contains information about the "globs" parameter for Ops Manager
+# This is used in the upgrade pipelines and also in the Pivnet-to-S3 pipeline
+# to determine the glob parameter for each IaaS.
+aws: "*AWS.yml"
+azure: "*Azure.yml"
+gcp: "*GCP.yml"
+openstack: "*.raw"
+vsphere: "*.ova"

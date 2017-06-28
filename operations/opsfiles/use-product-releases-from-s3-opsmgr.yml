@@ -1,0 +1,48 @@
+---
+- op: replace
+  path: /resources/name=pivnet-opsmgr
+  value:
+    name: pivnet-opsmgr
+    type: s3
+    source:
+      bucket: {{s3-bucket}}
+      access_key_id: {{s3-access-key-id}}
+      secret_access_key: {{s3-secret-access-key}}
+# aws+++
+      regexp: "ops-manager/ops-manager_v(PRODUCTVERSION)_AWS.yml"
+# aws---
+# azure+++
+      regexp: "ops-manager/ops-manager_v(PRODUCTVERSION)_Azure.yml"
+# azure---
+# gcp+++
+      regexp: "ops-manager/ops-manager_v(PRODUCTVERSION)_GCP.yml"
+# gcp---
+# openstack+++
+      regexp: "ops-manager/ops-manager_v(PRODUCTVERSION).raw"
+# openstack---
+# vsphere+++
+      regexp: "ops-manager/ops-manager_v(PRODUCTVERSION).ova"
+# vsphere---
+      region_name: {{s3-region-name}}
+      endpoint: {{s3-endpoint}}
+      disable_ssl: {{s3-disable-ssl}}
+      use_v2_signing: {{s3-use-v2-signing}}
+
+- op: replace
+  path: /jobs/name=upgrade-opsmgr/get=PCF-PIPELINES-RESOURCE-NAME
+  value:
+    aggregate:
+    - get: PCF-PIPELINES-RESOURCE-NAME
+    - get: pcf-pipelines-maestro
+
+- op: replace
+  path: /jobs/task=download-stemcells
+  value:
+    task: download-stemcells
+    file: pcf-pipelines-maestro/tasks/utils/download-stemcells-from-s3/task.yml
+    params:
+      IAAS_TYPE: IAASTYPE
+      S3_BUCKET: {{s3-bucket}}
+      S3_ACCESS_KEY_ID: {{s3-access-key-id}}
+      S3_SECRET_ACCESS_KEY: {{s3-secret-access-key}}
+      MAIN_CONFIG_FILE: ./pcf-pipelines-maestro/common/credentials.yml

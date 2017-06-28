@@ -1,0 +1,56 @@
+---
+- op: replace
+  path: /resources/name={{resource_name}}
+  value:
+    name: {{resource_name}}
+    type: s3
+    source:
+      bucket: {{s3-bucket}}
+      access_key_id: {{s3-access-key-id}}
+      secret_access_key: {{s3-secret-access-key}}
+      regexp: "RESOURCENAME/RESOURCENAME_v(PRODUCTVERSION).pivotal"
+      region_name: {{s3-region-name}}
+      endpoint: {{s3-endpoint}}
+      disable_ssl: {{s3-disable-ssl}}
+      use_v2_signing: {{s3-use-v2-signing}}
+
+- op: add
+  path: /resources/-
+  value:
+    name: s3-RESOURCENAME-stemcell-info
+    type: s3
+    source:
+      bucket: {{s3-bucket}}
+      access_key_id: {{s3-access-key-id}}
+      secret_access_key: {{s3-secret-access-key}}
+      regexp: "RESOURCENAME/RESOURCENAME_v(PRODUCTVERSION)_stemcell_version.txt"
+      region_name: {{s3-region-name}}
+      endpoint: {{s3-endpoint}}
+      disable_ssl: {{s3-disable-ssl}}
+      use_v2_signing: {{s3-use-v2-signing}}
+
+- op: replace
+  path: /jobs/name=upgrade-tile/get=PCF-PIPELINES-RESOURCE-NAME
+  value:
+    aggregate:
+    - get: PCF-PIPELINES-RESOURCE-NAME
+    - get: pcf-pipelines-maestro
+    - get: s3-RESOURCENAME-stemcell-info
+
+- op: replace
+  path: /jobs/task=upload-stemcell
+  value:
+    task: upload-stemcell
+    file: pcf-pipelines-maestro/tasks/utils/upload-stemcell-from-s3/task.yml
+    input_mapping:
+      s3-product-stemcell-info: s3-RESOURCENAME-stemcell-info
+    params:
+      IAAS_TYPE: {{iaas_type}}
+      S3_BUCKET: {{s3-bucket}}
+      S3_ACCESS_KEY_ID: {{s3-access-key-id}}
+      S3_SECRET_ACCESS_KEY: {{s3-secret-access-key}}
+      MAIN_CONFIG_FILE: ./pcf-pipelines-maestro/common/credentials.yml
+      PRODUCT: {{metadata_basename}}
+      OPSMAN_USERNAME: {{opsman_admin_username}}
+      OPSMAN_PASSWORD: {{opsman_admin_password}}
+      OPSMAN_URI: {{opsman_uri}}

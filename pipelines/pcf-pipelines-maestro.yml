@@ -1,0 +1,21 @@
+resources:
+- name: pcf-pipelines-maestro
+  type: git
+  source:
+    uri: {{maestro_project_url}}
+    private_key: {{git_private_key}}
+
+- name: pcf-pipelines
+  type: git
+  source:
+    uri: {{pcf_pipelines_project_url}}
+    tag_filter: {{pcf-pipelines-release-or-tag}}
+
+jobs:
+- name: orchestrate-pipelines
+  plan:
+  - get: pcf-pipelines-maestro
+    trigger: true
+  - get: pcf-pipelines
+  - task: conduct-updates-to-pipelines
+    file: pcf-pipelines-maestro/tasks/maestro/task.yml

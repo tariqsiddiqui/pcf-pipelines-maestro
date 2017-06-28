@@ -1,0 +1,46 @@
+---
+- op: remove
+  path: /jobs/name=MAIN_JOB_NAME_GOES_HERE/task=apply-changes
+
+- op: add
+  path: /jobs/-
+  value:
+    name: apply-changes
+    plan:
+    - get: pcf-pipelines-maestro
+    - get: RESOURCE_NAME_GOES_HERE
+      passed:
+      - PREVIOUS_JOB_NAME_GOES_HERE
+# PCF-PIPELINES-GIT+++
+    - get: pcf-pipelines
+# PCF-PIPELINES-GIT---
+# PCF-PIPELINES-PIVNET+++
+    - get: pcf-pipelines-tarball
+    - task: unpack-tarball
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source:
+            repository: busybox
+        inputs:
+        - name: pcf-pipelines-tarball
+        outputs:
+        - name: pcf-pipelines
+        run:
+         path: sh
+         args: ["-c", "tar -xvf pcf-pipelines-tarball/*.tgz"]
+# PCF-PIPELINES-PIVNET---
+    - task: wait-opsman-clear-running-tasks
+      file: pcf-pipelines-maestro/tasks/utils/wait-opsman-clear-running-tasks/task.yml
+      params:
+        OPSMAN_USERNAME: {{opsman_admin_username}}
+        OPSMAN_PASSWORD: {{opsman_admin_password}}
+        OPSMAN_URI: {{opsman_uri}}
+
+    - task: apply-changes
+      file: pcf-pipelines/tasks/apply-changes/task.yml
+      params:
+        OPSMAN_USERNAME: {{opsman_admin_username}}
+        OPSMAN_PASSWORD: {{opsman_admin_password}}
+        OPSMAN_URI: {{opsman_uri}}

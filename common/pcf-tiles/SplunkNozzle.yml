@@ -1,0 +1,16 @@
+# The name of the resource to be displayed in the pipeline, e.g. 'rabbitmq'
+resource_name: splunk-nozzle
+
+# The basename of the metadata file for the product without the file extension.
+# This can be found in the .pivotal file with the following:
+# `unzip -l p-rabbitmq-1.7.9.pivotal | grep metadata`
+metadata_basename: splunk-firehose-nozzle
+
+# The name of the product on Pivotal Network.
+# This can be found in the URL of the product page,
+product_slug: splunk-nozzle
+
+# The name of the product file found in the metadata file for the product.
+# This can be found in the .pivotal file's manifest for the product.
+# `unzip -p p-rabbitmq-1.7.8.pivotal "metadata/*.yml" | head`
+product_name: splunk-firehose-nozzle

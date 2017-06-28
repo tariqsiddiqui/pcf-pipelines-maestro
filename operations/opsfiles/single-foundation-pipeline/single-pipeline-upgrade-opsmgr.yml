@@ -1,0 +1,32 @@
+- op: add
+  path: /resources/-
+  value:
+# PIVOTAL-RELEASES-PIVNET+++
+    name: pivnet-opsmgr
+    type: pivnet
+    check_every: {{pivnet_poll_interval}}
+    source:
+      api_token: {{pivnet_token}}
+      product_slug: ops-manager
+      product_version: PRODUCTVERSION
+      sort_by: semver
+# PIVOTAL-RELEASES-PIVNET---
+# PIVOTAL-RELEASES-S3+++
+    name: pivnet-opsmgr
+    type: s3
+    source:
+      bucket: {{s3-bucket}}
+      access_key_id: {{s3-access-key-id}}
+      secret_access_key: {{s3-secret-access-key}}
+      regexp: "ops-manager/ops-manager_v(PRODUCTVERSION).*"
+      region_name: {{s3-region-name}}
+      endpoint: {{s3-endpoint}}
+      disable_ssl: {{s3-disable-ssl}}
+      use_v2_signing: {{s3-use-v2-signing}}
+# PIVOTAL-RELEASES-S3---
+
+- op: add
+  path: /jobs/-
+  value:
+  # single pipeline patch script will add the appropriate
+  # ops-mgr upgrade jobs here based on the targeted IaaS

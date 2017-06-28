@@ -1,0 +1,96 @@
+---
+- op: add
+  path: /resources/-
+  value:
+    name: artifactory-RESOURCENAME
+    type: artifactory
+    source:
+      endpoint: {{artifactory-endpoint}}
+      repository: {{artifactory-repository}}/RESOURCENAME
+      username: {{artifactory-username}}
+      password: {{artifactory-password}}
+      skip_ssl_verification: {{artifactory-skip-ssl-verification}}
+      regexp: "RESOURCENAME_v(?<version>PRODUCTVERSION).PRODUCTEXTENSION"
+
+- op: add
+  path: /resources/-
+  value:
+    name: artifactory-RESOURCENAME-stemcell-info
+    type: artifactory
+    source:
+      endpoint: {{artifactory-endpoint}}
+      repository: {{artifactory-repository}}/RESOURCENAME
+      username: {{artifactory-username}}
+      password: {{artifactory-password}}
+      skip_ssl_verification: {{artifactory-skip-ssl-verification}}
+      regexp: "RESOURCENAME_v(?<version>PRODUCTVERSION)_stemcell_version.txt"
+
+- op: add
+  path: /resources/-
+  value:
+    name: pivnet-RESOURCENAME
+    type: pivnet
+    check_every: {{pivnet_poll_interval}}
+    source:
+      api_token: {{pivnet_token}}
+      product_slug: PRODUCTSLUG
+      product_version: PRODUCTVERSION
+      sort_by: semver
+
+- op: add
+  path: /jobs/-
+  value:
+    name: upload-RESOURCENAME-to-artifactory
+    plan:
+    - get: pivnet-RESOURCENAME
+      trigger: true
+    - task: prepare-RESOURCENAME-files
+      config:
+        platform: linux
+        image_resource:
+          type: docker-image
+          source: {repository: czero/cflinuxfs2}
+        inputs:
+        - name: pivnet-RESOURCENAME
+        outputs:
+        - name: RESOURCENAME
+        run:
+          path: bash
+          args:
+          - -exc
+          - |
+            versionNumber=$(cat ./pivnet-RESOURCENAME/version | cut -d "#" -f 1 | tr -d " ")
+            mv pivnet-RESOURCENAME/*.PRODUCTEXTENSION RESOURCENAME/RESOURCENAME_v${versionNumber}.PRODUCTEXTENSION
+            mv pivnet-RESOURCENAME/metadata.* RESOURCENAME/
+            find .
+            # get info about required stemcell version from pivnet file and save to outputs folder
+            stemcell_version=$(cat RESOURCENAME/metadata.json | jq --raw-output '.Dependencies[] | select(.Release.Product.Name | contains("Stemcells")) | .Release.Version')
+            stemcell_version=$(echo $stemcell_version | cut -d " " -f 1)
+            echo "$stemcell_version" > RESOURCENAME/RESOURCENAME_v${versionNumber}_stemcell_version.txt
+
+    - put: artifactory-RESOURCENAME
+      params: { file: "RESOURCENAME/*.PRODUCTEXTENSION" }
+    - put: artifactory-RESOURCENAME-stemcell-info
+      params: { file: "RESOURCENAME/*_stemcell_version.txt" }
+
+- op: add
+  path: /jobs/-
+  value:
+    name: process-RESOURCENAME-stemcell
+    plan:
+    - get: artifactory-RESOURCENAME-stemcell-info
+      trigger: true
+      passed: [upload-RESOURCENAME-to-artifactory]
+    - get: pcf-pipelines-maestro
+    - task: check-RESOURCENAME-stemcell
+      file: pcf-pipelines-maestro/tasks/utils/s3-stemcell-upload/task.yml
+      input_mapping:
+        s3-stemcell-info: artifactory-RESOURCENAME-stemcell-info
+      params:
+        LIST_OF_IAAS: LISTOFIAAS
+        PIVNET_TOKEN: {{pivnet_token}}
+        BUILDPACK_NAME: RESOURCENAME
+        S3_BUCKET: {{s3-bucket}}
+        S3_ACCESS_KEY_ID: {{s3-access-key-id}}
+        S3_SECRET_ACCESS_KEY: {{s3-secret-access-key}}
+        MAIN_CONFIG_FILE: ./pcf-pipelines-maestro/common/credentials.yml

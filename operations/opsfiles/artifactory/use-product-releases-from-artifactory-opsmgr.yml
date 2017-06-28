@@ -1,0 +1,54 @@
+---
+- op: add
+  path: /resource_types/-
+  value:
+    name: artifactory
+    type: docker-image
+    source:
+      repository: pivotalservices/artifactory-resource
+
+- op: replace
+  path: /resources/name=pivnet-opsmgr
+  value:
+    name: pivnet-opsmgr
+    type: artifactory
+    source:
+      endpoint: {{artifactory-endpoint}}
+      repository: {{artifactory-repository}}
+# aws+++
+      regexp: "ops-manager/ops-manager_v(?<version>PRODUCTVERSION)_AWS.yml"
+# aws---
+# azure+++
+      regexp: "ops-manager/ops-manager_v(?<version>PRODUCTVERSION)_Azure.yml"
+# azure---
+# gcp+++
+      regexp: "ops-manager/ops-manager_v(?<version>PRODUCTVERSION)_GCP.yml"
+# gcp---
+# openstack+++
+      regexp: "ops-manager/ops-manager_v(?<version>PRODUCTVERSION).raw"
+# openstack---
+# vsphere+++
+      regexp: "ops-manager/ops-manager_v(?<version>PRODUCTVERSION).ova"
+# vsphere---
+      username: {{artifactory-username}}
+      password: {{artifactory-password}}
+      skip_ssl_verification: {{artifactory-skip-ssl-verification}}
+
+- op: replace
+  path: /jobs/name=upgrade-opsmgr/get=PCF-PIPELINES-RESOURCE-NAME
+  value:
+    aggregate:
+    - get: PCF-PIPELINES-RESOURCE-NAME
+    - get: pcf-pipelines-maestro
+
+- op: replace
+  path: /jobs/task=download-stemcells
+  value:
+    task: download-stemcells
+    file: pcf-pipelines-maestro/tasks/utils/download-stemcells-from-s3/task.yml
+    params:
+      IAAS_TYPE: IAASTYPE
+      S3_BUCKET: {{s3-bucket}}
+      S3_ACCESS_KEY_ID: {{s3-access-key-id}}
+      S3_SECRET_ACCESS_KEY: {{s3-secret-access-key}}
+      MAIN_CONFIG_FILE: ./pcf-pipelines-maestro/common/credentials.yml

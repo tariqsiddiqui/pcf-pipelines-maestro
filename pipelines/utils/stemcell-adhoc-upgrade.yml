@@ -1,0 +1,60 @@
+resource_types:
+- name: pivnet
+  type: docker-image
+  source:
+   repository: pivotalcf/pivnet-resource
+   tag: latest-final
+
+resources:
+- name: pcf-pipelines
+  type: git
+  source:
+    uri: {{pcf_pipelines_project_url}}
+    branch: master
+    private_key: {{git_private_key}}
+
+- name: pcf-pipelines-maestro
+  type: git
+  source:
+   uri: {{maestro_project_url}}
+   private_key: {{git_private_key}}
+
+jobs:
+- name: Get-and-Upload-Stemcell
+  plan:
+  - get: pcf-pipelines
+  - get: pcf-pipelines-maestro
+  - task: download-stemcell
+    file: pcf-pipelines-maestro/tasks/utils/download-stemcell-version/task.yml
+    params:
+      API_TOKEN: {{pivnet_token}}
+      IAAS_TYPE: {{iaas_type}}
+      STEMCELL_VERSION: {{stemcell_version}}
+
+  - task: upload-stemcell
+    file: pcf-pipelines-maestro/tasks/utils/upload-stemcell-version/task.yml
+    params:
+      OPSMAN_USERNAME: {{opsman_admin_username}}
+      OPSMAN_PASSWORD: {{opsman_admin_password}}
+      OPSMAN_URI: {{opsman_uri}}
+
+- name: Apply-Change
+  plan:
+  - get: pcf-pipelines
+  - get: pcf-pipelines-maestro
+    passed:
+    - Get-and-Upload-Stemcell
+
+  - task: wait-opsman-clear-running-tasks
+    file: pcf-pipelines-maestro/tasks/utils/wait-opsman-clear-running-tasks/task.yml
+    params:
+      OPSMAN_USERNAME: {{opsman_admin_username}}
+      OPSMAN_PASSWORD: {{opsman_admin_password}}
+      OPSMAN_URI: {{opsman_uri}}
+
+  - task: apply-changes
+    file: pcf-pipelines/tasks/apply-changes/task.yml
+    params:
+      OPSMAN_USERNAME: {{opsman_admin_username}}
+      OPSMAN_PASSWORD: {{opsman_admin_password}}
+      OPSMAN_URI: {{opsman_uri}}

@@ -1,0 +1,68 @@
+---
+- op: add
+  path: /resources/-
+  value:
+    name: BP_NAME_CURRENT
+    type: pivnet
+    source:
+      api_token: {{pivnet_token}}
+      product_slug: buildpacks
+      product_version: {{BP_VERSION_PARAM_NAME_CURRENT}}
+
+- op: add
+  path: /resources/-
+  value:
+    name: BP_NAME_CANDIDATE
+    type: pivnet
+    source:
+      api_token: {{pivnet_token}}
+      product_slug: buildpacks
+      product_version: {{BP_VERSION_PARAM_NAME_CANDIDATE}}
+
+- op: add
+  path: /jobs/-
+  value:
+    name: Update-BP_NAME_CANDIDATE
+    plan:
+    - get: cf-cli
+    - get: pcf-pipelines-maestro
+
+    - get: BP_NAME_CANDIDATE
+      # params:
+      #   globs:
+      #   - "BP_GLOBS"
+
+    - task: update-BP_NAME_CANDIDATE
+      file: pcf-pipelines-maestro/tasks/utils/stage-buildpack/task.yml
+      input_mapping:
+        buildpack: BP_NAME_CANDIDATE
+      params:
+        CF_API_URI: {{cf_api_uri}}
+        CF_USERNAME: {{cf_user}}
+        CF_PASSWORD: {{cf_password}}
+        BUILDPACK_NAME: BP_NAME_CANDIDATE
+
+- op: add
+  path: /jobs/-
+  value:
+    name: Update-BP_NAME_CURRENT
+    plan:
+    - get: cf-cli
+    - get: pcf-pipelines-maestro
+      passed:
+        - Update-BP_NAME_CANDIDATE
+
+    - get: BP_NAME_CURRENT
+      # params:
+      #   globs:
+      #   - "BP_GLOBS"
+
+    - task: update-BP_NAME_CURRENT
+      file: pcf-pipelines-maestro/tasks/utils/stage-buildpack/task.yml
+      input_mapping:
+        buildpack: BP_NAME_CURRENT
+      params:
+        CF_API_URI: {{cf_api_uri}}
+        CF_USERNAME: {{cf_user}}
+        CF_PASSWORD: {{cf_password}}
+        BUILDPACK_NAME: BP_NAME_CURRENT

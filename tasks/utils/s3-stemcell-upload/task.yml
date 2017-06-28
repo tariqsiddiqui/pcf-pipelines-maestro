@@ -1,0 +1,23 @@
+platform: linux
+
+image_resource:
+  type: docker-image
+  source: {repository: czero/cflinuxfs2}
+
+inputs:
+- name: s3-stemcell-info
+- name: pcf-pipelines-maestro
+outputs:
+- name: stemcells
+
+run:
+  path: pcf-pipelines-maestro/tasks/utils/s3-stemcell-upload/task.sh
+
+params:
+  LIST_OF_IAAS:
+  PIVNET_TOKEN:
+  BUILDPACK_NAME:
+  S3_BUCKET:
+  S3_ACCESS_KEY_ID:
+  S3_SECRET_ACCESS_KEY:
+  MAIN_CONFIG_FILE:

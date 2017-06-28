@@ -1,0 +1,24 @@
+---
+resource_types:
+- name: pivnet
+  type: docker-image
+  source:
+    repository: pivotalcf/pivnet-resource
+    tag: latest-final
+
+resources:
+- name: cf-cli
+  type: s3
+  source:
+    bucket: cf-cli-releases
+    region_name: us-west-1
+    regexp: releases/v([\d\.]+)/cf-cli_.*_linux_x86-64.tgz
+
+- name: pcf-pipelines-maestro
+  type: git
+  source:
+   uri: {{maestro_project_url}}
+   private_key: {{git_private_key}}
+
+jobs:
+- name: placeholder

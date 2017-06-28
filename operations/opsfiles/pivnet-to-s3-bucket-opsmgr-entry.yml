@@ -1,0 +1,199 @@
+---
+# aws+++
+- op: add
+  path: /resources/-
+  value:
+    name: s3-ops-manager-aws
+    type: s3
+    source:
+      bucket: {{s3-bucket}}
+      access_key_id: {{s3-access-key-id}}
+      secret_access_key: {{s3-secret-access-key}}
+      regexp: "ops-manager/ops-manager_v(PRODUCTVERSION)_AWS.yml"
+      region_name: {{s3-region-name}}
+      endpoint: {{s3-endpoint}}
+      disable_ssl: {{s3-disable-ssl}}
+      use_v2_signing: {{s3-use-v2-signing}}
+# aws---
+# azure+++
+- op: add
+  path: /resources/-
+  value:
+    name: s3-ops-manager-azure
+    type: s3
+    source:
+      bucket: {{s3-bucket}}
+      access_key_id: {{s3-access-key-id}}
+      secret_access_key: {{s3-secret-access-key}}
+      regexp: "ops-manager/ops-manager_v(PRODUCTVERSION)_Azure.yml"
+      region_name: {{s3-region-name}}
+      endpoint: {{s3-endpoint}}
+      disable_ssl: {{s3-disable-ssl}}
+      use_v2_signing: {{s3-use-v2-signing}}
+# azure---
+# gcp+++
+- op: add
+  path: /resources/-
+  value:
+    name: s3-ops-manager-gcp
+    type: s3
+    source:
+      bucket: {{s3-bucket}}
+      access_key_id: {{s3-access-key-id}}
+      secret_access_key: {{s3-secret-access-key}}
+      regexp: "ops-manager/ops-manager_v(PRODUCTVERSION)_GCP.yml"
+      region_name: {{s3-region-name}}
+      endpoint: {{s3-endpoint}}
+      disable_ssl: {{s3-disable-ssl}}
+      use_v2_signing: {{s3-use-v2-signing}}
+# gcp---
+# openstack+++
+- op: add
+  path: /resources/-
+  value:
+    name: s3-ops-manager-openstack
+    type: s3
+    source:
+      bucket: {{s3-bucket}}
+      access_key_id: {{s3-access-key-id}}
+      secret_access_key: {{s3-secret-access-key}}
+      regexp: "ops-manager/ops-manager_v(PRODUCTVERSION).raw"
+      region_name: {{s3-region-name}}
+      endpoint: {{s3-endpoint}}
+      disable_ssl: {{s3-disable-ssl}}
+      use_v2_signing: {{s3-use-v2-signing}}
+# openstack---
+# vsphere+++
+- op: add
+  path: /resources/-
+  value:
+    name: s3-ops-manager-vsphere
+    type: s3
+    source:
+      bucket: {{s3-bucket}}
+      access_key_id: {{s3-access-key-id}}
+      secret_access_key: {{s3-secret-access-key}}
+      regexp: "ops-manager/ops-manager_v(PRODUCTVERSION).ova"
+      region_name: {{s3-region-name}}
+      endpoint: {{s3-endpoint}}
+      disable_ssl: {{s3-disable-ssl}}
+      use_v2_signing: {{s3-use-v2-signing}}
+# vsphere---
+
+- op: add
+  path: /resources/-
+  value:
+    name: pivnet-ops-manager
+    type: pivnet
+    check_every: {{pivnet_poll_interval}}
+    source:
+      api_token: {{pivnet_token}}
+      product_slug: ops-manager
+      product_version: PRODUCTVERSION
+      sort_by: semver
+
+- op: add
+  path: /jobs/-
+  value:
+    name: upload-ops-manager-to-s3
+    plan:
+      - aggregate:
+        # aws+++
+        - get: pivnet-ops-manager-aws
+          resource: pivnet-ops-manager
+          trigger: true
+          params: { globs: ["*AWS.yml"] }
+        # aws---
+        # azure+++
+        - get: pivnet-ops-manager-azure
+          resource: pivnet-ops-manager
+          trigger: true
+          params: { globs: ["*Azure.yml"] }
+        # azure---
+        # gcp+++
+        - get: pivnet-ops-manager-gcp
+          resource: pivnet-ops-manager
+          trigger: true
+          params: { globs: ["*GCP.yml"] }
+        # gcp---
+        # openstack+++
+        - get: pivnet-ops-manager-openstack
+          resource: pivnet-ops-manager
+          trigger: true
+          params: { globs: ["*.raw"] }
+        # openstack---
+        # vsphere+++
+        - get: pivnet-ops-manager-vsphere
+          resource: pivnet-ops-manager
+          trigger: true
+          params: { globs: ["*.ova"] }
+        # vsphere---
+      - task: prepare-ops-manager-files
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source: {repository: czero/cflinuxfs2}
+          inputs:
+            # aws+++
+            - name: pivnet-ops-manager-aws
+            # aws---
+            # azure+++
+            - name: pivnet-ops-manager-azure
+            # azure---
+            # gcp+++
+            - name: pivnet-ops-manager-gcp
+            # gcp---
+            # openstack+++
+            - name: pivnet-ops-manager-openstack
+            # openstack---
+            # vsphere+++
+            - name: pivnet-ops-manager-vsphere
+            # vsphere---
+          outputs:
+            - name: ops-manager
+          run:
+            path: sh
+            args:
+            - -exc
+            - |
+              # aws+++
+              versionNumber=$(cat ./pivnet-ops-manager-aws/version | cut -d "#" -f 1 | tr -d " ")
+              mv pivnet-ops-manager-aws/*AWS.yml ops-manager/ops-manager_v${versionNumber}_AWS.yml
+              # aws---
+              # azure+++
+              versionNumber=$(cat ./pivnet-ops-manager-azure/version | cut -d "#" -f 1 | tr -d " ")
+              mv pivnet-ops-manager-azure/*Azure.yml ops-manager/ops-manager_v${versionNumber}_Azure.yml
+              # azure---
+              # gcp+++
+              versionNumber=$(cat ./pivnet-ops-manager-gcp/version | cut -d "#" -f 1 | tr -d " ")
+              mv pivnet-ops-manager-gcp/*GCP.yml ops-manager/ops-manager_v${versionNumber}_GCP.yml
+              # gcp---
+              # openstack+++
+              versionNumber=$(cat ./pivnet-ops-manager-openstack/version | cut -d "#" -f 1 | tr -d " ")
+              mv pivnet-ops-manager-openstack/*.raw ops-manager/ops-manager_v${versionNumber}.raw
+              # openstack---
+              # vsphere+++
+              versionNumber=$(cat ./pivnet-ops-manager-vsphere/version | cut -d "#" -f 1 | tr -d " ")
+              mv pivnet-ops-manager-vsphere/*.ova ops-manager/ops-manager_v${versionNumber}.ova
+              # vsphere---
+      # aws+++
+      - put: s3-ops-manager-aws
+        params: { file: "ops-manager/*AWS.yml" }
+      # aws---
+      # azure+++
+      - put: s3-ops-manager-azure
+        params: { file: "ops-manager/*Azure.yml" }
+      # azure---
+      # gcp+++
+      - put: s3-ops-manager-gcp
+        params: { file: "ops-manager/*GCP.yml" }
+      # gcp---
+      # openstack+++
+      - put: s3-ops-manager-openstack
+        params: { file: "ops-manager/*.raw" }
+      # openstack---
+      # vsphere+++
+      - put: s3-ops-manager-vsphere
+        params: { file: "ops-manager/*.ova" }
+      # vsphere---

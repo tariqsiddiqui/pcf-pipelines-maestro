@@ -1,0 +1,9 @@
+---
+- op: replace
+  path: /resources/name=pcf-pipelines
+  value:
+    name: pcf-pipelines
+    type: git
+    source:
+      uri: {{pcf_pipelines_project_url}}
+      branch: master

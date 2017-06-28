@@ -1,0 +1,15 @@
+---
+- op: replace
+  path: /jobs/name=Update-BP_NAME_CANDIDATE/get=BP_NAME_CANDIDATE
+  value:
+    get: BP_NAME_CANDIDATE
+    params:
+      globs:
+      - BP_GLOBS
+- op: replace
+  path: /jobs/name=Update-BP_NAME_CURRENT/get=BP_NAME_CURRENT
+  value:
+    get: BP_NAME_CURRENT
+    params:
+      globs:
+      - BP_GLOBS

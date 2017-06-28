@@ -1,0 +1,189 @@
+---
+# aws+++
+- op: add
+  path: /resources/-
+  value:
+    name: artifactory-ops-manager-aws
+    type: artifactory
+    source:
+      endpoint: {{artifactory-endpoint}}
+      repository: {{artifactory-repository}}/ops-manager
+      username: {{artifactory-username}}
+      password: {{artifactory-password}}
+      skip_ssl_verification: {{artifactory-skip-ssl-verification}}
+      regexp: "ops-manager_v(?<version>PRODUCTVERSION)_AWS.yml"
+# aws---
+# azure+++
+- op: add
+  path: /resources/-
+  value:
+    name: artifactory-ops-manager-azure
+    type: artifactory
+    source:
+      endpoint: {{artifactory-endpoint}}
+      repository: {{artifactory-repository}}/ops-manager
+      username: {{artifactory-username}}
+      password: {{artifactory-password}}
+      skip_ssl_verification: {{artifactory-skip-ssl-verification}}
+      regexp: "ops-manager_v(?<version>PRODUCTVERSION)_Azure.yml"
+# azure---
+# gcp+++
+- op: add
+  path: /resources/-
+  value:
+    name: artifactory-ops-manager-gcp
+    type: artifactory
+    source:
+      endpoint: {{artifactory-endpoint}}
+      repository: {{artifactory-repository}}/ops-manager
+      username: {{artifactory-username}}
+      password: {{artifactory-password}}
+      skip_ssl_verification: {{artifactory-skip-ssl-verification}}
+      regexp: "ops-manager_v(?<version>PRODUCTVERSION)_GCP.yml"
+# gcp---
+# openstack+++
+- op: add
+  path: /resources/-
+  value:
+    name: artifactory-ops-manager-openstack
+    type: artifactory
+    source:
+      endpoint: {{artifactory-endpoint}}
+      repository: {{artifactory-repository}}/ops-manager
+      username: {{artifactory-username}}
+      password: {{artifactory-password}}
+      skip_ssl_verification: {{artifactory-skip-ssl-verification}}
+      regexp: "ops-manager_v(?<version>PRODUCTVERSION).raw"
+# openstack---
+# vsphere+++
+- op: add
+  path: /resources/-
+  value:
+    name: artifactory-ops-manager-vsphere
+    type: artifactory
+    source:
+      endpoint: {{artifactory-endpoint}}
+      repository: {{artifactory-repository}}/ops-manager
+      username: {{artifactory-username}}
+      password: {{artifactory-password}}
+      skip_ssl_verification: {{artifactory-skip-ssl-verification}}
+      regexp: "ops-manager_v(?<version>PRODUCTVERSION).ova"
+# vsphere---
+
+- op: add
+  path: /resources/-
+  value:
+    name: pivnet-ops-manager
+    type: pivnet
+    check_every: {{pivnet_poll_interval}}
+    source:
+      api_token: {{pivnet_token}}
+      product_slug: ops-manager
+      product_version: PRODUCTVERSION
+      sort_by: semver
+
+- op: add
+  path: /jobs/-
+  value:
+    name: upload-ops-manager-to-artifactory
+    plan:
+      - aggregate:
+        # aws+++
+        - get: pivnet-ops-manager-aws
+          resource: pivnet-ops-manager
+          trigger: true
+          params: { globs: ["*AWS.yml"] }
+        # aws---
+        # azure+++
+        - get: pivnet-ops-manager-azure
+          resource: pivnet-ops-manager
+          trigger: true
+          params: { globs: ["*Azure.yml"] }
+        # azure---
+        # gcp+++
+        - get: pivnet-ops-manager-gcp
+          resource: pivnet-ops-manager
+          trigger: true
+          params: { globs: ["*GCP.yml"] }
+        # gcp---
+        # openstack+++
+        - get: pivnet-ops-manager-openstack
+          resource: pivnet-ops-manager
+          trigger: true
+          params: { globs: ["*.raw"] }
+        # openstack---
+        # vsphere+++
+        - get: pivnet-ops-manager-vsphere
+          resource: pivnet-ops-manager
+          trigger: true
+          params: { globs: ["*.ova"] }
+        # vsphere---
+      - task: prepare-ops-manager-files
+        config:
+          platform: linux
+          image_resource:
+            type: docker-image
+            source: {repository: czero/cflinuxfs2}
+          inputs:
+            # aws+++
+            - name: pivnet-ops-manager-aws
+            # aws---
+            # azure+++
+            - name: pivnet-ops-manager-azure
+            # azure---
+            # gcp+++
+            - name: pivnet-ops-manager-gcp
+            # gcp---
+            # openstack+++
+            - name: pivnet-ops-manager-openstack
+            # openstack---
+            # vsphere+++
+            - name: pivnet-ops-manager-vsphere
+            # vsphere---
+          outputs:
+            - name: ops-manager
+          run:
+            path: sh
+            args:
+            - -exc
+            - |
+              # aws+++
+              versionNumber=$(cat ./pivnet-ops-manager-aws/version | cut -d "#" -f 1 | tr -d " ")
+              mv pivnet-ops-manager-aws/*AWS.yml ops-manager/ops-manager_v${versionNumber}_AWS.yml
+              # aws---
+              # azure+++
+              versionNumber=$(cat ./pivnet-ops-manager-azure/version | cut -d "#" -f 1 | tr -d " ")
+              mv pivnet-ops-manager-azure/*Azure.yml ops-manager/ops-manager_v${versionNumber}_Azure.yml
+              # azure---
+              # gcp+++
+              versionNumber=$(cat ./pivnet-ops-manager-gcp/version | cut -d "#" -f 1 | tr -d " ")
+              mv pivnet-ops-manager-gcp/*GCP.yml ops-manager/ops-manager_v${versionNumber}_GCP.yml
+              # gcp---
+              # openstack+++
+              versionNumber=$(cat ./pivnet-ops-manager-openstack/version | cut -d "#" -f 1 | tr -d " ")
+              mv pivnet-ops-manager-openstack/*.raw ops-manager/ops-manager_v${versionNumber}.raw
+              # openstack---
+              # vsphere+++
+              versionNumber=$(cat ./pivnet-ops-manager-vsphere/version | cut -d "#" -f 1 | tr -d " ")
+              mv pivnet-ops-manager-vsphere/*.ova ops-manager/ops-manager_v${versionNumber}.ova
+              # vsphere---
+      # aws+++
+      - put: artifactory-ops-manager-aws
+        params: { file: "ops-manager/*AWS.yml" }
+      # aws---
+      # azure+++
+      - put: artifactory-ops-manager-azure
+        params: { file: "ops-manager/*Azure.yml" }
+      # azure---
+      # gcp+++
+      - put: artifactory-ops-manager-gcp
+        params: { file: "ops-manager/*GCP.yml" }
+      # gcp---
+      # openstack+++
+      - put: artifactory-ops-manager-openstack
+        params: { file: "ops-manager/*.raw" }
+      # openstack---
+      # vsphere+++
+      - put: artifactory-ops-manager-vsphere
+        params: { file: "ops-manager/*.ova" }
+      # vsphere---

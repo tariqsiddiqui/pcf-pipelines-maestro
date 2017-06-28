@@ -1,0 +1,158 @@
+# This file contains configuration parameters and credentials
+# specific for one individual PCF foundation. e.g. NYC-DEV, NYC-PRD, WSH-DEV, WSH-PRD
+# It controls how Maestro scripts generate, patch and organize pcf upgrade
+# pipelines for the foundation.
+# The name of this file (e.g. NYC-DEV) will be used as the Concourse Team name
+# for the foundation as well as a prefix for each individual pipeline name.
+
+# ==============================================================================
+# ======== SECTION 1 - Bill of Materials for the foundation ====================
+# ==============================================================================
+
+# Uncomment the items that upgrade pipelines should be created for, then push it
+# to git and re-run the Maestro main pipeline for pipelines to be updated/created.
+# ********************* Ops Manager upgrade *****
+BoM_OpsManager_product_version: 1.10.*
+# ********************* PCF tiles upgrade *****
+BoM_tile_ERT_product_version: 1.10.*
+# BoM_tile_MySQL_product_version: 1.9.*
+# BoM_tile_RabbitMQ_product_version: 1.7.*
+# BoM_tile_Redis_product_version: 1.7.*
+# BoM_tile_Metrics_product_version: 1.3.*
+# BoM_tile_SSO_product_version: 1.3.*
+# BoM_tile_JMXBridge_product_version: 1.8.*
+# BoM_tile_NewRelic_product_version: 1.9.*
+# BoM_tile_SCS_product_version: 1.3.*
+# BoM_tile_SplunkNozzle_product_version: 0.2.*
+# ********************* Buildpack upgrades - Candidate and Current Buildpack Versions ****
+# BoM_bp_go_buildpack_candidate: Go 1.8.1
+# BoM_bp_go_buildpack_current: Go 1.8.0
+# BoM_bp_java_buildpack_candidate: Java Buildpack 3.13
+# BoM_bp_java_buildpack_current: Java Buildpack 3.12
+# BoM_bp_java_buildpack_offline_candidate: Java Buildpack 3.13
+# BoM_bp_java_buildpack_offline_current: Java Buildpack 3.12
+# BoM_bp_binary_buildpack_candidate: Binary 1.0.12
+# BoM_bp_binary_buildpack_current: Binary 1.0.11
+# BoM_bp_dotnet_core_buildpack_candidate: .NET Core 1.0.16
+# BoM_bp_dotnet_core_buildpack_current: .NET Core 1.0.15
+# BoM_bp_nodejs_buildpack_candidate: NodeJS 1.5.34
+# BoM_bp_nodejs_buildpack_current: NodeJS 1.5.32
+# BoM_bp_php_buildpack_candidate: PHP 4.3.31
+# BoM_bp_php_buildpack_current: PHP 4.3.30
+# BoM_bp_python_buildpack_candidate: Python 1.5.18
+# BoM_bp_python_buildpack_current: Python 1.5.17
+# BoM_bp_ruby_buildpack_candidate: Ruby 1.6.37
+# BoM_bp_ruby_buildpack_current: Ruby 1.6.37
+# BoM_bp_staticfile_buildpack_candidate: StaticFile 1.4.6
+# BoM_bp_staticfile_buildpack_current: StaticFile 1.4.5
+# BoM_bp_tc_buildpack_candidate: tc Server Buildpack 3.16
+# BoM_bp_tc_buildpack_current: tc Server Buildpack 3.15
+# ********************* Stemcell upgrade - when an adhoc stemcell upgrade is required, as stemcell upgrades are automatically done along with Tiles upgrades ****
+# BoM_stemcell_version: 3263.24
+
+# ==============================================================================
+# ======== SECTION 2 - Pipelines customization options =========================
+# ==============================================================================
+# These parameters control which patches (from ./operations/operations.sh) get applied
+# to this foundation's pipelines.
+#
+#   Make `Apply-Changes" a separate and gated job in upgrade pipelines.
+#   Acceptable values: true or false
+gated-Apply-Changes-Job: false
+
+
+# ==============================================================================
+# ======== SECTION 3 - Pipelines credentials and parameters ====================
+# ==============================================================================
+
+# *********** IaaS name for which stemcell to download ***********
+# See https://github.com/pivotal-cf/pcf-product-stemcell-downloader/
+# for the list of allowed IaaS names (e.g. aws|openstack|vcloud|vsphere|azure|gcp)
+iaas_type: vsphere
+
+# ******** Credentials for Operations Manager - for both tiles and OpsMan pipelines ***********
+# These are used for uploading, staging and deploying product files on Operations Manager.
+# These are common parameters for ALL types of IaaS.
+# ops manager uri - do not include protocol. e.g. opsmgr.pez.pivotal.io
+opsman_uri: CHANGEME
+# ops manager admin user ID. e.g. admin
+opsman_admin_username: CHANGEME
+# Ops Manager admin password
+opsman_admin_password: CHANGEME
+# encryption passphrase for ops manager VM recovery
+opsman_passphrase: CHANGEME
+# ops manager ssh password (ubuntu user ssh password)
+opsman_ssh_password: CHANGEME
+# Interval to check on new releases from Pivotal Network. eg. 2h, 3h45m, 3000s
+check_new_opsman_every: 1h
+# Timeout for tile upload tasks
+tile_upload_timeout: 1800
+# The interval to check Pivotal Network for updates to the product file.
+pivnet_poll_interval: 1h
+
+# *********** Parameters for Ops Manager Upgrade pipeline ***********
+# Uncomment the one section that matches this foundation's IaaS and update params
+# ******* For GCP ******************************************
+# existing_opsman_vm_name: CHANGEME
+# opsman_gcp_project: CHANGEME
+# opsman_gcp_zone: CHANGEME
+# opsman_gcp_credfile_contents: CHANGEME
+# pivnet_image_region: us
+# ******* For Azure ****************************************
+# azure_region: CHANGEME    # e.g. east_us
+# azure_subscription_id: CHANGEME
+# azure_client_id: CHANGEME
+# azure_client_secret: CHANGEME
+# azure_tenant_id: CHANGEME
+# azure_resource_group_name: CHANGEME
+# azure_storage_account_name: CHANGEME
+# azure_storage_account_key: CHANGEME
+# azure_storage_container_name: CHANGEME
+# existing_opsman_vm_name: CHANGEME
+# ******* For AWS ******************************************
+# aws_access_key_id: CHANGEME
+# aws_secret_access_key: CHANGEME
+# aws_region: CHANGEME
+# aws_vpc_id: CHANGEME
+# existing_opsman_vm_name: CHANGEME # Existing Ops Manager VM Name Pattern. This should uniquely filter to a running Ops Manager instance. eg.  myenv-OpsMan
+# ******* For VSPHERE **************************************
+vcenter_url: CHANGEME # vCenter URL - exclude protocol. e.g. vcsa-01.haas.pivotal.io
+vcenter_username: CHANGEME  # vCenter Username. e.g. administrator@vsphere.local
+vcenter_password: CHANGEME  # vCenter Password
+vcenter_datacenter: CHANGEME # vCenter Datacenter. e.g. Datacenter
+vcenter_cluster: CHANGEME # vCenter Cluster. e.g. Cluster
+vcenter_datastore: CHANGEME # vCenter Datastore. e.g. LUN01
+vcenter_resource_pool: CHANGEME # vCenter Resource Pool. e.g. RP01
+opsman_vm_folder: CHANGEME # vCenter Folder for Ops Mgr VM. e.g. /vm/env1
+opsman_ip: CHANGEME # IP Address for the Ops Manager. e.g. 10.193.152.6
+netmask: CHANGEME # Subnet Mask for the Ops Manager. e.g. 255.255.255.0
+gateway: CHANGEME # Gateway IP Address for the Ops Manager. e.g. 10.193.152.1
+dns: CHANGEME # DNS for the Ops Manager. e.g. 10.193.152.2
+ntp: CHANGEME # NTP for the Ops Manager. e.g. 10.193.152.2
+opsman_network: CHANGEME # Network for the Ops Manager. e.g. "VM Network"
+opsman_timeout_seconds: 1800 # Ops Manager timeout in seconds. e.g. 1800
+
+# *********** Credentials for Concourse Team ***********
+# admin user ID for the Concourse team to be created for the foundation. e.g. admin
+concourse_team_userid: CHANGEME
+# admin user ID for the Concourse team to be created for the foundation.
+concourse_team_pass: CHANGEME
+#    The four parameters below need to be defined only if the Concourse server
+#    for this foundation's team and pipelines differs from the one defined in /common/credentials.yml
+#
+#     - Concourse server url including protocol and port number if applicable (e.g. http://192.168.100.4:8080, http://myconcourse.domain.com)
+# concourse_url: http://192.168.100.4:8080
+#     - Main team admin user ID. Use string NONE if running a local vagrant-based Concourse server
+# concourse_main_userid: CHANGEME
+#     - Main team admin password. Use string NONE if running a local vagrant-based Concourse server
+# concourse_main_pass: CHANGEME
+#     - Flag to control skip of SSL verification during Concourse FLY login. Acceptable values: true or false
+# concourse_skip_ssl_verification: false
+
+# *********** Parameters for Buildpacks Upgrade pipeline ***********
+# Credentials for Pivotal Cloud Foundry API login
+cf_api_uri: CHANGEME # API URI for CF
+cf_user: CHANGEME # CF API admin username
+cf_password: CHANGEME # CF API admin Password
+
+# ============================================
