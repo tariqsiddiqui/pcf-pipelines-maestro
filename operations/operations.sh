@@ -30,8 +30,15 @@ processPipelinePatchesPerFoundation() {
   iaasType="${2}"
 
   echo "Foundation pipelines patches: preparing template files for upgrade-tile and upgrade-opsmgr."
-  # the presence of these two files in the maestro root dir is expected by maestro scripts
-  cp ./globalPatchFiles/upgrade-ops-manager/$iaasType/pipeline.yml ./upgrade-opsmgr.yml
+
+  set +e
+  opsmgr_product_version=$(grep "BoM_OpsManager_product_version" $foundation | grep "^[^#;]" | cut -d ":" -f 2 | tr -d " ")
+  set -e
+  if [ -n "${opsmgr_product_version}" ]; then
+    cp ./globalPatchFiles/upgrade-ops-manager/$iaasType/pipeline.yml ./upgrade-opsmgr.yml
+  fi
+
+  # the presence of this file in the maestro root dir is expected by maestro scripts
   cp ./globalPatchFiles/upgrade-tile/pipeline.yml ./upgrade-tile-template.yml
 
   # *** GATED APPLY CHANGES patch - keep this entry before processUsePivnetReleasePatch ***
