@@ -5,7 +5,7 @@ function prepareTools() {
     echo "Downloading FLY from Concourse server $current_concourse_url"
     skipSSLVerificationParameter=" "
     [ "${skip_ssl_verification,,}" == "true" ] && skipSSLVerificationParameter=" --no-check-certificate ";
-    wget $skipSSLVerificationParameter -O fly $current_concourse_url/api/v1/cli?arch=amd64\&platform=linux
+    wget $skipSSLVerificationParameter -O fly "$current_concourse_url/api/v1/cli?arch=amd64&platform=linux"
     chmod +x ./fly
     echo "FLY version in use:"
     ./fly --version
