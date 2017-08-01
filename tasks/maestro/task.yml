@@ -11,3 +11,9 @@ inputs:
 
 run:
   path: pcf-pipelines-maestro/tasks/maestro/task.sh
+
+params:
+  MAIN_CONCOURSE_URL: 
+  MAIN_CONCOURSE_USERNAME:
+  MAIN_CONCOURSE_PASSWORD:
+  MAIN_CONCOURSE_SKIP_SSL:

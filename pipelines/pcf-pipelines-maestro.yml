@@ -3,7 +3,8 @@ resources:
   type: git
   source:
     uri: {{maestro_project_url}}
-    private_key: {{git_private_key}}
+    # username: {{git_token}}
+    # password: x-oauth-basic
 
 - name: pcf-pipelines
   type: git
@@ -19,3 +20,8 @@ jobs:
   - get: pcf-pipelines
   - task: conduct-updates-to-pipelines
     file: pcf-pipelines-maestro/tasks/maestro/task.yml
+    params:
+      MAIN_CONCOURSE_URL: {{concourse_url}}
+      MAIN_CONCOURSE_USERNAME: {{concourse_main_userid}}
+      MAIN_CONCOURSE_PASSWORD: {{concourse_main_pass}}
+      MAIN_CONCOURSE_SKIP_SSL: {{concourse_skip_ssl_verification}}

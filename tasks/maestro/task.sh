@@ -16,7 +16,11 @@ processDebugEnablementConfig "./common/credentials.yml"  # determine if script d
 
 previous_concourse_url="" # initialize current concourse url variable
 
-parseConcourseCredentials "./common/credentials.yml" "true"
+# parseConcourseCredentials "./common/credentials.yml" "true"
+export cc_url=$MAIN_CONCOURSE_URL
+export cc_main_user=$MAIN_CONCOURSE_USERNAME
+export cc_main_pass=$MAIN_CONCOURSE_PASSWORD
+export skip_ssl_verification=$MAIN_CONCOURSE_SKIP_SSL
 
 # prepare Concourse FLY cli in the task container (see ./tasks/maestro/scripts/tools.sh)
 prepareTools "$cc_url"
@@ -37,18 +41,24 @@ for foundation in ./foundations/*.yml; do
     echo "Processing pipelines for foundation [$foundation_name] with IaaS [$iaasType]"
 
     # get Concourse credentials from foundation file (see ./tasks/maestro/scripts/concourse.sh)
-    parseConcourseCredentials "$foundation" "false"
-    parseConcourseFoundationCredentials "$foundation"
+    # parseConcourseCredentials "$foundation" "false"
+    # parseConcourseFoundationCredentials "$foundation"
 
     concourseFlySync "$cc_url" "$previous_concourse_url" "main"
     previous_concourse_url=$cc_url     # save current concourse url
 
     # login into Concourse main team (see ./tasks/maestro/scripts/concourse.sh)
-    loginConcourseTeam "$cc_url" "$cc_main_user" "$cc_main_pass" "main" "$skip_ssl_verification"
+    # loginConcourseTeam "$cc_url" "$cc_main_user" "$cc_main_pass" "main" "$skip_ssl_verification"
+
+
     # create concourse team for the foundation if not existing yet (see ./tasks/maestro/scripts/concourse.sh)
-    createConcourseFoundationTeam "$foundation_name" "$cc_user" "$cc_pass" "main"
+    # createConcourseFoundationTeam "$foundation_name" "$cc_user" "$cc_pass" "main"
+    createConcourseFoundationTeam "$foundation_name" "$MAIN_CONCOURSE_USERNAME" "$MAIN_CONCOURSE_PASSWORD" "main"
+
+
     # Login into the corresponding Concourse team for the foundation (see ./tasks/maestro/scripts/concourse.sh)
-    loginConcourseTeam "$cc_url" "$cc_user" "$cc_pass" "$foundation_name" "$skip_ssl_verification"
+    # loginConcourseTeam "$cc_url" "$cc_user" "$cc_pass" "$foundation_name" "$skip_ssl_verification"
+    loginConcourseTeam "$MAIN_CONCOURSE_URL" "$MAIN_CONCOURSE_USERNAME" "$MAIN_CONCOURSE_PASSWORD" "$foundation_name" "$MAIN_CONCOURSE_SKIP_SSL"
 
     # Process pipelines YAML patches for each foundation according to its configuration (see ./tasks/operations/operations.sh)
     processPipelinePatchesPerFoundation "$foundation" "$iaasType"

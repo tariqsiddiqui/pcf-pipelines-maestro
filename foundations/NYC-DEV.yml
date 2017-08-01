@@ -81,16 +81,16 @@ iaas_type: vsphere
 # ******** Credentials for Operations Manager - for both tiles and OpsMan pipelines ***********
 # These are used for uploading, staging and deploying product files on Operations Manager.
 # These are common parameters for ALL types of IaaS.
-# ops manager uri - do not include protocol. e.g. opsmgr.pez.pivotal.io
-opsman_uri: CHANGEME
+# ops manager uri - do not include protocol. e.g. opsmgr.pez.pivotal.io/
+opsman_uri: ((opsman_hostname))
 # ops manager admin user ID. e.g. admin
-opsman_admin_username: CHANGEME
+opsman_admin_username: ((opsman_admin_username))
 # Ops Manager admin password
-opsman_admin_password: CHANGEME
+opsman_admin_password: ((opsman_admin_password))
 # encryption passphrase for ops manager VM recovery
-opsman_passphrase: CHANGEME
+opsman_passphrase: ((opsman_passphrase))
 # ops manager ssh password (ubuntu user ssh password)
-opsman_ssh_password: CHANGEME
+opsman_ssh_password: ((opsman_ssh_password))
 # Interval to check on new releases from Pivotal Network. eg. 2h, 3h45m, 3000s
 check_new_opsman_every: 1h
 # Timeout for tile upload tasks
