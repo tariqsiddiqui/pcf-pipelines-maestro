@@ -53,7 +53,6 @@
       S3_ENDPOINT: {{s3-endpoint}}
       S3_DISABLE_SSL: {{s3-disable-ssl}}
       S3_V2: {{s3-use-v2-signing}}
-      PRODUCT: {{metadata_basename}}
       OPSMAN_USERNAME: {{opsman_admin_username}}
       OPSMAN_PASSWORD: {{opsman_admin_password}}
       OPSMAN_URI: {{opsman_uri}}

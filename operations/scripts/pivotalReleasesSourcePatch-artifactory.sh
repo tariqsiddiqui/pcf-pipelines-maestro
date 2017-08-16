@@ -133,13 +133,11 @@ createPivNetToS3Pipeline() {
         if [ -e "$tileMetadataFilename" ]; then
           resource_name=$(grep "resource_name" $tileMetadataFilename | cut -d ":" -f 2 | tr -d " ")
           product_slug=$(grep "product_slug" $tileMetadataFilename | cut -d ":" -f 2 | tr -d " ")
-          metadata_basename=$(grep "metadata_basename" $tileMetadataFilename | cut -d ":" -f 2 | tr -d " ")
 
           sed -i "s/PRODUCTSLUG/$product_slug/g" ./pivnet-to-s3-bucket-entry.yml
           sed -i "s/PRODUCTVERSION/$tileEntryValue/g" ./pivnet-to-s3-bucket-entry.yml
           sed -i "s/PRODUCTEXTENSION/pivotal/g" ./pivnet-to-s3-bucket-entry.yml
           sed -i "s/RESOURCENAME/$resource_name/g" ./pivnet-to-s3-bucket-entry.yml
-          sed -i "s/METADATABASENAME/$metadata_basename/g" ./pivnet-to-s3-bucket-entry.yml
           sed -i "s/LISTOFIAAS/$(cat ./listOfIaaSInUse.txt)/g" ./pivnet-to-s3-bucket-entry.yml
 
           echo "Adding tile [$tile_name], version [$tileEntryValue] to PivNet-to-S3 pipeline"

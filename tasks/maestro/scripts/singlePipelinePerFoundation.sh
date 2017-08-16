@@ -170,7 +170,7 @@ singlePipelineProcessTiles() {
       resource_name=$(grep "resource_name" $tileMetadataFilename | cut -d ":" -f 2 | tr -d " ")
       product_name=$(grep "product_name" $tileMetadataFilename | cut -d ":" -f 2 | tr -d " ")
       product_slug=$(grep "product_slug" $tileMetadataFilename | cut -d ":" -f 2 | tr -d " ")
-      metadata_basename=$(grep "metadata_basename" $tileMetadataFilename | cut -d ":" -f 2 | tr -d " ")
+      metadata_basename=$product_slug
       # replace product name, version, metadata, resource for the tile in the template
       sed -i "s/RESOURCE_NAME_GOES_HERE/$tile_name/g" ./single-pipeline-upgrade-tile.yml
       sed -i "s/PRODUCTSLUG/$product_slug/g" ./single-pipeline-upgrade-tile.yml

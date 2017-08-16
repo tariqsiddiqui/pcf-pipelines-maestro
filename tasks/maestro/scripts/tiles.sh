@@ -20,12 +20,15 @@ function setTilesUpgradePipelines() {
     # Pipeline template file ./upgrade-tile-template.yml is produced by processPipelinePatchesPerFoundation() in ./operations/operations.sh
     cp ./upgrade-tile-template.yml ./upgrade-tile.yml
     # update when tile template contains variables to be replaced with sed, e.g. releases in S3 bucket
-    resource_name=$(grep "resource_name" $tileMetadataFilename | cut -d ":" -f 2 | tr -d " ")
     sed -i "s/RESOURCENAME/$resource_name/g" ./upgrade-tile.yml
     sed -i "s/PRODUCTVERSION/$tileEntryValue/g" ./upgrade-tile.yml
 
     # customize upgrade tile job name
-    sed -i "s/upgrade-tile/upgrade-$tile_name-tile/g" ./upgrade-tile.yml
+    sed -i "s/\bupgrade-tile\b/upgrade-$tile_name-tile/g" ./upgrade-tile.yml
+    sed -i "s/name: tile/name: $resource_name/g" ./upgrade-tile.yml
+    sed -i "s/get: tile/get: $resource_name/g" ./upgrade-tile.yml
+    sed -i "s/resource: tile/resource: $resource_name/g" ./upgrade-tile.yml
+    
     if [ "${gatedApplyChangesJob,,}" == "true" ]; then
         sed -i "s/RESOURCE_NAME_GOES_HERE/$resource_name/g" ./upgrade-tile.yml
         sed -i "s/PREVIOUS_JOB_NAME_GOES_HERE/upgrade-$tile_name-tile/g" ./upgrade-tile.yml
@@ -37,9 +40,9 @@ function setTilesUpgradePipelines() {
     else
         applyMaestroResourcePatch ./upgrade-tile.yml
     fi
-
+    cat ./upgrade-tile.yml
     echo "Setting upgrade pipeline for tile [$tile_name], version [$tileEntryValue]"
-    ./fly -t $foundation_name set-pipeline -p "$foundation_name-Upgrade-$tile_name" -c ./upgrade-tile.yml -l "./common/pcf-tiles/$tile_name.yml" -l ./common/credentials.yml -l "$foundation" -v "product_version=${tileEntryValue}" -n
+    ./fly -t $foundation_name set-pipeline -p "$foundation_name-Upgrade-$tile_name" -c ./upgrade-tile.yml -l "./common/pcf-tiles/$tile_name.yml" -l ./common/credentials.yml -l "$foundation" -v "product_version_regex=${tileEntryValue}" -n
   done
 
 }

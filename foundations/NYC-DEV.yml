@@ -12,18 +12,18 @@
 # Uncomment the items that upgrade pipelines should be created for, then push it
 # to git and re-run the Maestro main pipeline for pipelines to be updated/created.
 # ********************* Ops Manager upgrade *****
-BoM_OpsManager_product_version: 1.10.*
+BoM_OpsManager_product_version: ^1\.11\..*$
 # ********************* PCF tiles upgrade *****
-BoM_tile_ERT_product_version: 1.10.*
-# BoM_tile_MySQL_product_version: 1.9.*
-# BoM_tile_RabbitMQ_product_version: 1.7.*
-# BoM_tile_Redis_product_version: 1.7.*
-# BoM_tile_Metrics_product_version: 1.3.*
-# BoM_tile_SSO_product_version: 1.3.*
-# BoM_tile_JMXBridge_product_version: 1.8.*
-# BoM_tile_NewRelic_product_version: 1.9.*
-# BoM_tile_SCS_product_version: 1.3.*
-# BoM_tile_SplunkNozzle_product_version: 0.2.*
+BoM_tile_ERT_product_version: ^1\.11\..*$
+# BoM_tile_MySQL_product_version: ^1\.9\..*$
+# BoM_tile_RabbitMQ_product_version: ^1\.7\..*$
+# BoM_tile_Redis_product_version: ^1\.7\..*$
+# BoM_tile_Metrics_product_version: ^1\.3\..*$
+# BoM_tile_SSO_product_version: ^1\.3\..*$
+# BoM_tile_JMXBridge_product_version: ^1\.8\..*$
+# BoM_tile_NewRelic_product_version: ^1\.9\..*$
+# BoM_tile_SCS_product_version: ^1\.3\..*$
+# BoM_tile_SplunkNozzle_product_version: ^0\.2\..*$
 # ********************* Buildpack upgrades - Candidate and Current Buildpack Versions ****
 # BoM_bp_go_buildpack_candidate: Go 1.8.1
 # BoM_bp_go_buildpack_current: Go 1.8.0
@@ -82,7 +82,7 @@ iaas_type: vsphere
 # These are used for uploading, staging and deploying product files on Operations Manager.
 # These are common parameters for ALL types of IaaS.
 # ops manager uri - do not include protocol. e.g. opsmgr.pez.pivotal.io/
-opsman_uri: ((opsman_hostname))
+opsman_uri: ((opsman_uri))
 # ops manager admin user ID. e.g. admin
 opsman_admin_username: ((opsman_admin_username))
 # Ops Manager admin password
@@ -93,8 +93,6 @@ opsman_passphrase: ((opsman_passphrase))
 opsman_ssh_password: ((opsman_ssh_password))
 # Interval to check on new releases from Pivotal Network. eg. 2h, 3h45m, 3000s
 check_new_opsman_every: 1h
-# Timeout for tile upload tasks
-tile_upload_timeout: 1800
 # The interval to check Pivotal Network for updates to the product file.
 pivnet_poll_interval: 1h
 
@@ -138,7 +136,7 @@ gateway: CHANGEME # Gateway IP Address for the Ops Manager. e.g. 10.193.152.1
 dns: CHANGEME # DNS for the Ops Manager. e.g. 10.193.152.2
 ntp: CHANGEME # NTP for the Ops Manager. e.g. 10.193.152.2
 opsman_network: CHANGEME # Network for the Ops Manager. e.g. "VM Network"
-opsman_timeout_seconds: 1800 # Ops Manager timeout in seconds. e.g. 1800
+opsman_timeout_seconds: 3600 # Ops Manager timeout in seconds. e.g. 1800
 
 # *********** Credentials for Concourse Team ***********
 # admin user ID for the Concourse team to be created for the foundation. e.g. admin
