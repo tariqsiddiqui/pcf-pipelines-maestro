@@ -22,7 +22,7 @@ image_resource:
 inputs:
 - name: cf-cli
 - name: buildpack
-- name: custom-pipeline-tasks
+- name: pcf-pipelines-maestro
 
 params:
   CF_API_URI:
@@ -31,4 +31,4 @@ params:
   BUILDPACK_NAME:
 
 run:
-  path: custom-pipeline-tasks/ci/tasks/stage-buildpack/task.sh
+  path: pcf-pipelines-maestro/tasks/utils/stage-buildpack/task.sh
