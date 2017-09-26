@@ -1,0 +1,11 @@
+# The name of the resource to be displayed in the pipeline, e.g. 'rabbitmq'
+resource_name: isolation-segment
+
+# The name of the product on Pivotal Network.
+# This can be found in the URL of the product page,
+product_slug: p-isolation-segment
+
+# The name of the product file found in the metadata file for the product.
+# This can be found in the .pivotal file's manifest for the product.
+# `unzip -p p-rabbitmq-1.7.8.pivotal "metadata/*.yml" | head`
+product_name: p-isolation-segment

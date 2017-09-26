@@ -1,8 +1,8 @@
 ---
 - op: replace
-  path: /resources/name={{resource_name}}
+  path: /resources/name=tile
   value:
-    name: {{resource_name}}
+    name: tile
     type: s3
     source:
       bucket: {{s3-bucket}}
@@ -38,9 +38,9 @@
     - get: s3-RESOURCENAME-stemcell-info
 
 - op: replace
-  path: /jobs/task=upload-stemcell
+  path: /jobs/task=upload-tile-and-stemcell
   value:
-    task: upload-stemcell
+    task: upload-tile-and-stemcell
     file: pcf-pipelines-maestro/tasks/utils/upload-stemcell-from-s3/task.yml
     input_mapping:
       s3-product-stemcell-info: s3-RESOURCENAME-stemcell-info
