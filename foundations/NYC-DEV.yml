@@ -102,63 +102,63 @@ pivnet_poll_interval: 1h
 # existing_opsman_vm_name: CHANGEME
 # opsman_gcp_project: CHANGEME
 # opsman_gcp_zone: CHANGEME
-# opsman_gcp_credfile_contents: CHANGEME
+# opsman_gcp_credfile_contents: ((opsman_gcp_credfile_contents))
 # pivnet_image_region: us
 # ******* For Azure ****************************************
 # azure_region: CHANGEME    # e.g. east_us
-# azure_subscription_id: CHANGEME
-# azure_client_id: CHANGEME
-# azure_client_secret: CHANGEME
-# azure_tenant_id: CHANGEME
+# azure_subscription_id: ((azure_subscription_id))
+# azure_client_id: ((azure_client_id))
+# azure_client_secret: ((azure_client_secret))
+# azure_tenant_id: ((azure_tenant_id))
 # azure_resource_group_name: CHANGEME
-# azure_storage_account_name: CHANGEME
-# azure_storage_account_key: CHANGEME
+# azure_storage_account_name: ((azure_storage_account_name))
+# azure_storage_account_key: ((azure_storage_account_key))
 # azure_storage_container_name: CHANGEME
 # existing_opsman_vm_name: CHANGEME
 # ******* For AWS ******************************************
-# aws_access_key_id: CHANGEME
-# aws_secret_access_key: CHANGEME
-# aws_region: CHANGEME
-# aws_vpc_id: CHANGEME
+# aws_access_key_id: ((aws_access_key_id))
+# aws_secret_access_key: ((aws_secret_access_key))
+# aws_region: ((aws_region))
+# aws_vpc_id: ((aws_vpc_id))
 # existing_opsman_vm_name: CHANGEME # Existing Ops Manager VM Name Pattern. This should uniquely filter to a running Ops Manager instance. eg.  myenv-OpsMan
 # ******* For VSPHERE **************************************
-vcenter_url: CHANGEME # vCenter URL - exclude protocol. e.g. vcsa-01.haas.pivotal.io
-vcenter_username: CHANGEME  # vCenter Username. e.g. administrator@vsphere.local
-vcenter_password: CHANGEME  # vCenter Password
-vcenter_datacenter: CHANGEME # vCenter Datacenter. e.g. Datacenter
-vcenter_cluster: CHANGEME # vCenter Cluster. e.g. Cluster
-vcenter_datastore: CHANGEME # vCenter Datastore. e.g. LUN01
-vcenter_resource_pool: CHANGEME # vCenter Resource Pool. e.g. RP01
-opsman_vm_folder: CHANGEME # vCenter Folder for Ops Mgr VM. e.g. /vm/env1
-opsman_ip: CHANGEME # IP Address for the Ops Manager. e.g. 10.193.152.6
-netmask: CHANGEME # Subnet Mask for the Ops Manager. e.g. 255.255.255.0
-gateway: CHANGEME # Gateway IP Address for the Ops Manager. e.g. 10.193.152.1
-dns: CHANGEME # DNS for the Ops Manager. e.g. 10.193.152.2
-ntp: CHANGEME # NTP for the Ops Manager. e.g. 10.193.152.2
-opsman_network: CHANGEME # Network for the Ops Manager. e.g. "VM Network"
-opsman_timeout_seconds: 3600 # Ops Manager timeout in seconds. e.g. 1800
+vcenter_url: ((vcenter_url))                      # vCenter URL - exclude protocol. e.g. vcsa-01.haas.pivotal.io
+vcenter_username: ((vcenter_username))            # vCenter Username. e.g. administrator@vsphere.local
+vcenter_password: ((vcenter_password))            # vCenter Password
+vcenter_datacenter: ((vcenter_datacenter))        # vCenter Datacenter. e.g. Datacenter
+vcenter_cluster: ((vcenter_cluster))              # vCenter Cluster. e.g. Cluster
+vcenter_datastore: ((vcenter_datastore))          # vCenter Datastore. e.g. LUN01
+vcenter_resource_pool: ((vcenter_resource_pool))  # vCenter Resource Pool. e.g. RP01
+opsman_vm_folder: ((opsman_vm_folder))            # vCenter Folder for Ops Mgr VM. e.g. /vm/env1
+opsman_ip: ((opsman_ip))                          # IP Address for the Ops Manager. e.g. 10.193.152.6
+netmask: ((netmask))                              # Subnet Mask for the Ops Manager. e.g. 255.255.255.0
+gateway: ((gateway))                              # Gateway IP Address for the Ops Manager. e.g. 10.193.152.1
+dns: ((dns))                                      # DNS for the Ops Manager. e.g. 10.193.152.2
+ntp: ((ntp))                                      # NTP for the Ops Manager. e.g. 10.193.152.2
+opsman_network: ((opsman_network))                # Network for the Ops Manager. e.g. "VM Network"
+opsman_timeout_seconds: 3600                      # Ops Manager timeout in seconds. e.g. 1800
 
 # *********** Credentials for Concourse Team ***********
 # admin user ID for the Concourse team to be created for the foundation. e.g. admin
-concourse_team_userid: CHANGEME
+concourse_team_userid: ((concourse_team_userid))
 # admin user ID for the Concourse team to be created for the foundation.
-concourse_team_pass: CHANGEME
+concourse_team_pass: ((concourse_team_pass))
 #    The four parameters below need to be defined only if the Concourse server
 #    for this foundation's team and pipelines differs from the one defined in /common/credentials.yml
 #
 #     - Concourse server url including protocol and port number if applicable (e.g. http://192.168.100.4:8080, http://myconcourse.domain.com)
 # concourse_url: http://192.168.100.4:8080
 #     - Main team admin user ID. Use string NONE if running a local vagrant-based Concourse server
-# concourse_main_userid: CHANGEME
+# concourse_main_userid: ((concourse_main_userid))
 #     - Main team admin password. Use string NONE if running a local vagrant-based Concourse server
-# concourse_main_pass: CHANGEME
+# concourse_main_pass: ((concourse_main_pass))
 #     - Flag to control skip of SSL verification during Concourse FLY login. Acceptable values: true or false
 # concourse_skip_ssl_verification: false
 
 # *********** Parameters for Buildpacks Upgrade pipeline ***********
 # Credentials for Pivotal Cloud Foundry API login
-cf_api_uri: CHANGEME # API URI for CF
-cf_user: CHANGEME # CF API admin username
-cf_password: CHANGEME # CF API admin Password
+cf_api_uri: ((cf_api_uri))    # API URI for CF
+cf_user: ((cf_user))          # CF API admin username
+cf_password: ((cf_password))  # CF API admin Password
 
 # ============================================
