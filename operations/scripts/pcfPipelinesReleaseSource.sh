@@ -20,6 +20,7 @@ processPcfPipelinesSourcePatch() {
 
   echo "Applying pcf-pipelines source patch for [$pcfPipelinesSource] to upgrade-tiles pipelines files."
   cp ./globalPatchFiles/upgrade-tile/pipeline.yml ./upgrade-tile-tmp.yml
+
   cat ./upgrade-tile-tmp.yml | yaml_patch_linux -o $patchFile > ./globalPatchFiles/upgrade-tile/pipeline.yml
 
   # apply patch to files used for Single Pipeline style (one pipeline with all tiles)
@@ -37,10 +38,12 @@ preUpdatesForPcfPipelinesSourcePatch() {
   pcfpipelinesReleaseOrTag=$(grep "pcf-pipelines-release-or-tag" $configFile | grep "^[^#;]" | cut -d ":" -f 2 | tr -d " ")
 
   if [ "${pcfPipelinesSource,,}" == "git" ]; then
+
       # if pcfpipelinesReleaseOrTag is commented out, do nothing
       # if pcfpipelinesReleaseOrTag is NOT commented out,
       # then replace "branch: master" with "tag_filter: v..." in the patch file
       if [ -n "$pcfpipelinesReleaseOrTag" ]; then
+
           echo "Pre-updates of pcf-pipelines git tag for file [$patchFile]."
           sed -i "s/branch: master/tag_filter: \"$pcfpipelinesReleaseOrTag\"/g" $patchFile
       fi

@@ -28,19 +28,19 @@ function setTilesUpgradePipelines() {
     sed -i "s/name: tile/name: $resource_name/g" ./upgrade-tile.yml
     sed -i "s/get: tile/get: $resource_name/g" ./upgrade-tile.yml
     sed -i "s/resource: tile/resource: $resource_name/g" ./upgrade-tile.yml
-    
+
     if [ "${gatedApplyChangesJob,,}" == "true" ]; then
         sed -i "s/RESOURCE_NAME_GOES_HERE/$resource_name/g" ./upgrade-tile.yml
         sed -i "s/PREVIOUS_JOB_NAME_GOES_HERE/upgrade-$tile_name-tile/g" ./upgrade-tile.yml
     fi
 
+    if [ "${pivotalReleasesSource,,}" == "pivnet" ]; then  # && [ "${gatedApplyChangesJob,,}" == "false" ];
 
-    if [ "${pivotalReleasesSource,,}" == "pivnet" ] && [ "${gatedApplyChangesJob,,}" == "false" ]; then
         echo "Default pipeline, not adding resource for pcf-pipelines-maestro"
     else
         applyMaestroResourcePatch ./upgrade-tile.yml
     fi
-    cat ./upgrade-tile.yml
+
     echo "Setting upgrade pipeline for tile [$tile_name], version [$tileEntryValue]"
     ./fly -t $foundation_name set-pipeline -p "$foundation_name-Upgrade-$tile_name" -c ./upgrade-tile.yml -l "./common/pcf-tiles/$tile_name.yml" -l ./common/credentials.yml -l "$foundation" -v "product_version_regex=${tileEntryValue}" -n
   done

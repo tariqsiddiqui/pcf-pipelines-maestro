@@ -15,7 +15,7 @@ function setOpsMgrUpgradePipeline() {
 
       sed -i "s/PRODUCTVERSION/$opsmgr_product_version/g" ./upgrade-opsmgr.yml
 
-      if [ "${pivotalReleasesSource,,}" == "pivnet" ] && [ "${gatedApplyChangesJob,,}" == "false" ]; then
+      if [ "${pivotalReleasesSource,,}" == "pivnet" ]; then
           echo "Default pipeline, not adding resource for pcf-pipelines-maestro"
       else
           applyMaestroResourcePatch ./upgrade-opsmgr.yml

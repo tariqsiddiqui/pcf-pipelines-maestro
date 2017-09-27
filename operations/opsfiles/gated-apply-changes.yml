@@ -1,46 +1,40 @@
 ---
-- op: remove
-  path: /jobs/name=MAIN_JOB_NAME_GOES_HERE/task=apply-changes
-
-- op: add
-  path: /jobs/-
+- op: replace
+  path: /jobs/name=apply-changes
   value:
     name: apply-changes
     plan:
-    - get: pcf-pipelines-maestro
-    - get: RESOURCE_NAME_GOES_HERE
-      passed:
-      - PREVIOUS_JOB_NAME_GOES_HERE
+    - aggregate:
+      - get: pivnet-product
+        resource: tile
+        passed: [ upload-and-stage-tile ]
+        trigger: false
+        params:
+          globs: [ ]
 # PCF-PIPELINES-GIT+++
-    - get: pcf-pipelines
+      - get: pcf-pipelines
 # PCF-PIPELINES-GIT---
 # PCF-PIPELINES-PIVNET+++
-    - get: pcf-pipelines-tarball
-    - task: unpack-tarball
-      config:
-        platform: linux
-        image_resource:
-          type: docker-image
-          source:
-            repository: busybox
-        inputs:
-        - name: pcf-pipelines-tarball
-        outputs:
-        - name: pcf-pipelines
-        run:
-         path: sh
-         args: ["-c", "tar -xvf pcf-pipelines-tarball/*.tgz"]
+      do:
+        - get: pcf-pipelines-tarball
+        - task: unpack-tarball
+          config:
+            platform: linux
+            image_resource:
+              type: docker-image
+              source:
+                repository: czero/cflinuxfs2
+            inputs:
+            - name: pcf-pipelines-tarball
+            outputs:
+            - name: pcf-pipelines
+            run:
+             path: bash
+             args: ["-c", "tar -xvf pcf-pipelines-tarball/*.tgz"]
 # PCF-PIPELINES-PIVNET---
-    - task: wait-opsman-clear-running-tasks
-      file: pcf-pipelines-maestro/tasks/utils/wait-opsman-clear-running-tasks/task.yml
-      params:
-        OPSMAN_USERNAME: {{opsman_admin_username}}
-        OPSMAN_PASSWORD: {{opsman_admin_password}}
-        OPSMAN_URI: {{opsman_uri}}
-
     - task: apply-changes
       file: pcf-pipelines/tasks/apply-changes/task.yml
       params:
         OPSMAN_USERNAME: {{opsman_admin_username}}
         OPSMAN_PASSWORD: {{opsman_admin_password}}
-        OPSMAN_URI: {{opsman_uri}}
+        OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}

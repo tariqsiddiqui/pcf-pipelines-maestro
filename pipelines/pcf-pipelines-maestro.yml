@@ -3,7 +3,7 @@ resources:
   type: git
   source:
     uri: {{maestro_project_url}}
-    # username: {{git_token}}
+    # username: { { git_token }  }
     # password: x-oauth-basic
 
 - name: pcf-pipelines

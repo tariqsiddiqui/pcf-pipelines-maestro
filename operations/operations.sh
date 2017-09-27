@@ -29,7 +29,7 @@ processPipelinePatchesPerFoundation() {
   foundation="${1}"
   iaasType="${2}"
 
-  echo "Foundation pipelines patches: preparing template files for upgrade-tile and upgrade-opsmgr."
+  echo "Foundation pipelines patches: preparing template files for upgrade-tile."
 
   set +e
   opsmgr_product_version=$(grep "BoM_OpsManager_product_version" $foundation | grep "^[^#;]" | cut -d ":" -f 2 | tr -d " ")

@@ -30,7 +30,7 @@
       use_v2_signing: {{s3-use-v2-signing}}
 
 - op: replace
-  path: /jobs/name=upgrade-tile/get=PCF-PIPELINES-RESOURCE-NAME
+  path: /jobs/name=upload-and-stage-tile/get=PCF-PIPELINES-RESOURCE-NAME
   value:
     aggregate:
     - get: PCF-PIPELINES-RESOURCE-NAME
@@ -55,4 +55,4 @@
       S3_V2: {{s3-use-v2-signing}}
       OPSMAN_USERNAME: {{opsman_admin_username}}
       OPSMAN_PASSWORD: {{opsman_admin_password}}
-      OPSMAN_URI: {{opsman_uri}}
+      OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
