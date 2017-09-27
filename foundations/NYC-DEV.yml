@@ -137,6 +137,7 @@ gateway: ((gateway))                              # Gateway IP Address for the O
 dns: ((dns))                                      # DNS for the Ops Manager. e.g. 10.193.152.2
 ntp: ((ntp))                                      # NTP for the Ops Manager. e.g. 10.193.152.2
 opsman_network: ((opsman_network))                # Network for the Ops Manager. e.g. "VM Network"
+opsman_disk_type: thin                            # use thick or thin disk provisioning. Required only for pcf-pipelines 0.17.0+
 opsman_timeout_seconds: 3600                      # Ops Manager timeout in seconds. e.g. 1800
 
 # *********** Credentials for Concourse Team ***********
