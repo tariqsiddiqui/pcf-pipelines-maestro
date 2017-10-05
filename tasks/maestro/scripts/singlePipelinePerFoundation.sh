@@ -8,7 +8,9 @@ processSinglePipelinePerFoundation() {
   echo "Processing a single upgrade pipeline for foundation [$foundationName]"
 
   pcfPipelinesSource=$(grep "pcf-pipelines-source" $mainConfigFile | grep "^[^#;]" | cut -d ":" -f 2 | tr -d " ")
-  gatedApplyChangesJob=$(grep "gated-Apply-Changes-Job" $foundation | cut -d ":" -f 2 | tr -d " ")
+
+  # gatedApplyChangesJob=$(grep "gated-Apply-Changes-Job" $foundation | cut -d ":" -f 2 | tr -d " ")
+
   # if pivotal-releases-source is "s3", then later on avoid adding a duplicate maestro resource to the pipelines
   pivotalReleasesSource=$(grep "pivotal-releases-source" $mainConfigFile | grep "^[^#;]" | cut -d ":" -f 2 | tr -d " ")
 
@@ -25,8 +27,8 @@ processSinglePipelinePerFoundation() {
   # add upgrade pipelines for the enabled tiles in the BoM
   singlePipelineProcessTiles "$foundation" "$iaasType" "$gatedApplyChangesJob"
 
-  if [ "${gatedApplyChangesJob,,}" == "true" ]; then
-      gatedApplyChangesPatchUpdatePcfPipelinesSource "./operations/opsfiles/single-foundation-pipeline/single-pipeline-gated-apply-changes.yml" "$pcfPipelinesSource"
+#      gatedApplyChangesPatchUpdatePcfPipelinesSource "./operations/opsfiles/single-foundation-pipeline/single-pipeline-gated-apply-changes.yml" "$pcfPipelinesSource"
+
       cp  ./singleUpgradePipeline.yml ./singleUpgradePipeline-tmp.yml
       cat ./singleUpgradePipeline-tmp.yml | yaml_patch_linux -o ./operations/opsfiles/single-foundation-pipeline/single-pipeline-gated-apply-changes.yml > ./singleUpgradePipeline.yml
       cat > tile-group-entry.yml <<EOF
@@ -36,12 +38,13 @@ processSinglePipelinePerFoundation() {
   value:
     name: Apply-Changes
     jobs:
-    - Apply-Changes
+    - apply-changes
 EOF
       cp  ./singleUpgradePipeline.yml ./singleUpgradePipeline-tmp.yml
       cat ./singleUpgradePipeline-tmp.yml | yaml_patch_linux -o tile-group-entry.yml > ./singleUpgradePipeline.yml
-      echo "    - Apply-Changes" >> all-jobs-group-entry.yml
-  fi
+      echo "    - apply-changes" >> all-jobs-group-entry.yml
+
+  # fi
 
   # apply patches to include the updated "All" group to the pipeline file
   cp  ./singleUpgradePipeline.yml ./singleUpgradePipeline-tmp.yml
@@ -67,7 +70,8 @@ singlePipelineProcessOpsMgr() {
 
       cp ./globalPatchFiles/upgrade-ops-manager/$iaasType/pipeline.yml ./upgrade-opsmgr-original-global-patched.yml
       # check if gatedApplyChangesJob is enabled and process it appropriately for opsmgr template file
-      [ "${gatedApplyChangesJob,,}" == "true" ] && removeTaskFromJob "./upgrade-opsmgr-original-global-patched.yml" "upgrade-opsmgr" "apply-changes"
+
+      # [ "${gatedApplyChangesJob,,}" == "true" ] && removeTaskFromJob "./upgrade-opsmgr-original-global-patched.yml" "upgrade-opsmgr" "apply-changes"
 
       cp ./operations/opsfiles/single-foundation-pipeline/single-pipeline-upgrade-opsmgr.yml ./single-pipeline-upgrade-opsmgr-patch.yml
       sed -i "s/PRODUCTVERSION/$opsmgr_product_version/g" ./single-pipeline-upgrade-opsmgr-patch.yml
@@ -100,7 +104,7 @@ singlePipelineProcessOpsMgr() {
     do:
     - get: $pcfPipelinesResourceKey
     - get: pcf-pipelines-maestro
-      trigger: true
+      trigger: false
       passed: [maestro-timer]
 EOF
       else   # pcf-pipelines-maestro entry already exists from s3 patch, just add trigger:true and "passed"
@@ -160,7 +164,7 @@ singlePipelineProcessTiles() {
     # Prepare patch template file for the specific tile
     cp ./operations/opsfiles/single-foundation-pipeline/single-pipeline-upgrade-tile.yml ./single-pipeline-upgrade-tile.yml
     # check if gatedApplyChangesJob is enabled and process it appropriately for opsmgr template file
-    [ "${gatedApplyChangesJob,,}" == "true" ] && sed -i "/NON-GATED-APPLY-CHANGES+++/,/NON-GATED-APPLY-CHANGES---/d" ./single-pipeline-upgrade-tile.yml
+    #[ "${gatedApplyChangesJob,,}" == "true" ] && sed -i "/NON-GATED-APPLY-CHANGES+++/,/NON-GATED-APPLY-CHANGES---/d" ./single-pipeline-upgrade-tile.yml
 
     # get tile metadata file
     tileMetadataFilename="./common/pcf-tiles/$tile_name.yml"
@@ -196,11 +200,11 @@ singlePipelineProcessTiles() {
     name: $tile_name
     jobs:
     - maestro-timer
-    - upgrade-$tile_name-tile
+    - upload-and-stage-$tile_name-tile
 EOF
     cp  ./singleUpgradePipeline.yml ./singleUpgradePipeline-tmp.yml
     cat ./singleUpgradePipeline-tmp.yml | yaml_patch_linux -o tile-group-entry.yml > ./singleUpgradePipeline.yml
-    echo "    - upgrade-$tile_name-tile" >> all-jobs-group-entry.yml
+    echo "    - upload-and-stage-$tile_name-tile" >> all-jobs-group-entry.yml
 
   done
 

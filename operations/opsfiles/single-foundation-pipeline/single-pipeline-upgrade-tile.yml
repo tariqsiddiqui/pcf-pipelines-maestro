@@ -4,7 +4,6 @@
 # PIVOTAL-RELEASES-PIVNET+++
     name: RESOURCE_NAME_GOES_HERE
     type: pivnet
-    check_every: {{pivnet_poll_interval}}
     source:
       api_token: {{pivnet_token}}
       product_slug: PRODUCTSLUG
@@ -28,18 +27,19 @@
 - op: add
   path: /jobs/-
   value:
-    name: upgrade-RESOURCE_NAME_GOES_HERE-tile
+    name: upload-and-stage-RESOURCE_NAME_GOES_HERE-tile
     plan:
     - aggregate:
-      - get: pcf-pipelines-maestro
-        trigger: true
-        passed: [maestro-timer]
       - get: pivnet-product
         resource: RESOURCE_NAME_GOES_HERE
         trigger: true
         params:
           globs:
           - "*pivotal"
+      - get: pcf-pipelines-maestro
+        trigger: false
+        passed:
+          - maestro-timer
 # PCF-PIPELINES-GIT+++
       - get: pcf-pipelines
 # PCF-PIPELINES-GIT---
@@ -60,41 +60,26 @@
          path: sh
          args: ["-c", "tar -xvf pcf-pipelines-tarball/*.tgz"]
 # PCF-PIPELINES-PIVNET---
-# NON-GATED-APPLY-CHANGES+++
     - task: RESOURCE_NAME_GOES_HERE-wait-opsman-clear
       file: pcf-pipelines/tasks/wait-opsman-clear/task.yml
       params:
         OPSMAN_USERNAME: {{opsman_admin_username}}
         OPSMAN_PASSWORD: {{opsman_admin_password}}
-        OPSMAN_URI: {{opsman_uri}}
-# NON-GATED-APPLY-CHANGES---
-    - task: upload-RESOURCE_NAME_GOES_HERE-tile
-      file: pcf-pipelines/tasks/upload-product/task.yml
+        OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
+    - task: upload-RESOURCE_NAME_GOES_HERE-tile-and-stemcell
+      file: pcf-pipelines/tasks/upload-product-and-stemcell/task.yml
       params:
-        OPSMAN_USERNAME: {{opsman_admin_username}}
-        OPSMAN_PASSWORD: {{opsman_admin_password}}
-        OPSMAN_URI: {{opsman_uri}}
-        TILE_UPLOAD_TIMEOUT: {{tile_upload_timeout}}
+        IAAS: {{iaas_type}}
+        OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
+        OPS_MGR_USR: {{opsman_admin_username}}
+        OPS_MGR_PWD: {{opsman_admin_password}}
+        PIVNET_API_TOKEN: {{pivnet_token}}
+        NO_PROXY: ""
+        OM_IP: ""
     - task: stage-RESOURCE_NAME_GOES_HERE-tile
       file: pcf-pipelines/tasks/stage-product/task.yml
       params:
         OPSMAN_USERNAME: {{opsman_admin_username}}
         OPSMAN_PASSWORD: {{opsman_admin_password}}
-        OPSMAN_URI: {{opsman_uri}}
+        OPSMAN_DOMAIN_OR_IP_ADDRESS: {{opsman_domain_or_ip_address}}
         PRODUCT_NAME: PRODUCTNAME
-    - task: upload-stemcell-for-RESOURCE_NAME_GOES_HERE-tile
-      file: pcf-pipelines/tasks/upload-stemcell/task.yml
-      params:
-        PRODUCT: PRODUCTMETADATANAME
-        IAAS_TYPE: {{iaas_type}}
-        OPSMAN_USERNAME: {{opsman_admin_username}}
-        OPSMAN_PASSWORD: {{opsman_admin_password}}
-        OPSMAN_URI: {{opsman_uri}}
-# NON-GATED-APPLY-CHANGES+++
-    - task: apply-changes
-      file: pcf-pipelines/tasks/apply-changes/task.yml
-      params:
-        OPSMAN_USERNAME: {{opsman_admin_username}}
-        OPSMAN_PASSWORD: {{opsman_admin_password}}
-        OPSMAN_URI: {{opsman_uri}}
-# NON-GATED-APPLY-CHANGES---

@@ -83,10 +83,13 @@ processPatchForSinglePipelineStyle() {
   # remove marked pivnet specific sections from template patch file
   sed -i "/# ${tagToRemove}+++/,/# ${tagToRemove}---/d" ./pipelines/utils/single-foundation-pipeline.yml
   sed -i "/# ${tagToRemove}+++/,/# ${tagToRemove}---/d" ./operations/opsfiles/single-foundation-pipeline/single-pipeline-upgrade-tile.yml
+  sed -i "/# ${tagToRemove}+++/,/# ${tagToRemove}---/d" ./operations/opsfiles/single-foundation-pipeline/single-pipeline-gated-apply-changes.yml
   # remove just markers for the selected option
   sed -i "/# ${tagToKeep}+++/d" ./pipelines/utils/single-foundation-pipeline.yml
   sed -i "/# ${tagToKeep}---/d" ./pipelines/utils/single-foundation-pipeline.yml
   sed -i "/# ${tagToKeep}+++/d" ./operations/opsfiles/single-foundation-pipeline/single-pipeline-upgrade-tile.yml
   sed -i "/# ${tagToKeep}---/d" ./operations/opsfiles/single-foundation-pipeline/single-pipeline-upgrade-tile.yml
+  sed -i "/# ${tagToKeep}+++/d" ./operations/opsfiles/single-foundation-pipeline/single-pipeline-gated-apply-changes.yml
+  sed -i "/# ${tagToKeep}---/d" ./operations/opsfiles/single-foundation-pipeline/single-pipeline-gated-apply-changes.yml
 
 }
