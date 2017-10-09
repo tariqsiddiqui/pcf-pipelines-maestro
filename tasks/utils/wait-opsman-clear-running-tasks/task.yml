@@ -20,13 +20,12 @@ image_resource:
   source: {repository: czero/cflinuxfs2}
 
 inputs:
-  - name: pipeline-upgrade-custom-tasks
-  - name: tool-om
+  - name: pcf-pipelines-maestro
 
 params:
   OPSMAN_USERNAME:
   OPSMAN_PASSWORD:
-  OPSMAN_URI:
+  OPSMAN_DOMAIN_OR_IP_ADDRESS:
 
 run:
-  path: pipeline-upgrade-custom-tasks/ci/tasks/wait-opsman-clear/task.sh
+  path: pcf-pipelines-maestro/ci/tasks/wait-opsman-clear/task.sh

@@ -1,4 +1,4 @@
-#!/bin/bash -u
+#!/bin/bash -eu
 
 #This script polls ops mgr waiting for running installs to be empty before beginning
 #POLL_INTERVAL controls how quickly the script will poll ops mgr for changes to pending changes/running installs
@@ -6,16 +6,13 @@
 POLL_INTERVAL=30
 function main() {
 
-  chmod +x tool-om/om-linux
-  CMD_PATH="./tool-om/om-linux"
-
   local cwd
   cwd="${1}"
 
   while :
   do
 
-      ${CMD_PATH} --target "${OPSMAN_URI}" \
+      om-linux --target "${OPSMAN_DOMAIN_OR_IP_ADDRESS}" \
            --skip-ssl-validation \
            --username "${OPSMAN_USERNAME}" \
            --password "${OPSMAN_PASSWORD}" \
