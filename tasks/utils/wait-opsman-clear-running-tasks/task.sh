@@ -8,7 +8,7 @@ function main() {
 
   local cwd
   cwd="${1}"
-
+  set +e
   while :
   do
 
@@ -37,6 +37,7 @@ function main() {
       # echo "Validate manually. Skipping automated running status check for 1.9.2 and older. Proceeding"
       # exit 0
   done
+	set -e
 }
 
 main "${PWD}"
