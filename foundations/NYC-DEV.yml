@@ -76,7 +76,7 @@ upgrade-pipelines-structure-style: multiple
 
 # *********** IaaS name for which stemcell to download ***********
 # See https://github.com/pivotal-cf/pcf-product-stemcell-downloader/
-# for the list of allowed IaaS names (e.g. aws|openstack|vcloud|vsphere|azure|gcp)
+# for the list of allowed IaaS names (e.g. aws|openstack|vcloud|vsphere|azure|google)
 iaas_type: vsphere
 
 # ******** Credentials for Operations Manager - for both tiles and OpsMan pipelines ***********
@@ -99,7 +99,7 @@ pivnet_poll_interval: 1h
 
 # *********** Parameters for Ops Manager Upgrade pipeline ***********
 # Uncomment the one section that matches this foundation's IaaS and update params
-# ******* For GCP ******************************************
+# ******* For Google - GCP ******************************************
 # existing_opsman_vm_name: CHANGEME
 # opsman_gcp_project: CHANGEME
 # opsman_gcp_zone: CHANGEME

@@ -35,7 +35,9 @@ processPipelinePatchesPerFoundation() {
   opsmgr_product_version=$(grep "BoM_OpsManager_product_version" $foundation | grep "^[^#;]" | cut -d ":" -f 2 | tr -d " ")
   set -e
   if [ -n "${opsmgr_product_version}" ]; then
-    cp ./globalPatchFiles/upgrade-ops-manager/$iaasType/pipeline.yml ./upgrade-opsmgr.yml
+    iaasDirName=$iaasType
+    [ "${iaasType,,}" == "google" ] && iaasDirName="gcp"
+    cp ./globalPatchFiles/upgrade-ops-manager/$iaasDirName/pipeline.yml ./upgrade-opsmgr.yml
   fi
 
   # the presence of this file in the maestro root dir is expected by maestro scripts

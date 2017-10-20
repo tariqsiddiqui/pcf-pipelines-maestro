@@ -2,6 +2,6 @@
 # This is used in the stemcell upload/download tasks of pipelines that use S3 resources
 aws: light-bosh-stemcell-(.*)-aws-xen-hvm-ubuntu-trusty-go_agent.tgz
 azure: bosh-stemcell-(.*)-azure-hyperv-ubuntu-trusty-go_agent.tgz
-gcp: light-bosh-stemcell-(.*)-google-kvm-ubuntu-trusty-go_agent.tgz
+google: light-bosh-stemcell-(.*)-google-kvm-ubuntu-trusty-go_agent.tgz
 openstack: bosh-stemcell-(.*)-openstack-kvm-ubuntu-trusty-go_agent-raw.tgz
 vsphere: bosh-stemcell-(.*)-vsphere-esxi-ubuntu-trusty-go_agent.tgz

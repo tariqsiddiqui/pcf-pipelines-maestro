@@ -68,7 +68,10 @@ singlePipelineProcessOpsMgr() {
   if [ -n "${opsmgr_product_version}" ]; then
       echo "Setting OpsMgr upgrade pipeline for foundation [$foundation_name], version [$opsmgr_product_version]"
 
-      cp ./globalPatchFiles/upgrade-ops-manager/$iaasType/pipeline.yml ./upgrade-opsmgr-original-global-patched.yml
+      iaasDirName=$iaasType
+      [ "${iaasType,,}" == "google" ] && iaasDirName="gcp"
+
+      cp ./globalPatchFiles/upgrade-ops-manager/$iaasDirName/pipeline.yml ./upgrade-opsmgr-original-global-patched.yml
       # check if gatedApplyChangesJob is enabled and process it appropriately for opsmgr template file
 
       # [ "${gatedApplyChangesJob,,}" == "true" ] && removeTaskFromJob "./upgrade-opsmgr-original-global-patched.yml" "upgrade-opsmgr" "apply-changes"

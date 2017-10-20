@@ -3,6 +3,6 @@
 # to determine the glob parameter for each IaaS.
 aws: "*AWS.yml"
 azure: "*Azure.yml"
-gcp: "*GCP.yml"
+google: "*GCP.yml"
 openstack: "*.raw"
 vsphere: "*.ova"
