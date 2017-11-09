@@ -12,11 +12,11 @@
 # Uncomment the items that upgrade pipelines should be created for, then push it
 # to git and re-run the Maestro main pipeline for pipelines to be updated/created.
 # ********************* Ops Manager upgrade *****
-BoM_OpsManager_product_version: ^1\.11\..*$
+#BoM_OpsManager_product_version: ^1\.10\..*$
 # ********************* PCF tiles upgrade *****
-BoM_tile_ERT_product_version: ^1\.11\..*$
+#BoM_tile_ERT_product_version: ^1\.10\..*$
 # BoM_tile_IsolationSegment_product_version: ^1\.11\..*$
-# BoM_tile_MySQL_product_version: ^1\.9\..*$
+BoM_tile_MySQL_product_version: ^1\.9\..*$
 # BoM_tile_RabbitMQ_product_version: ^1\.7\..*$
 # BoM_tile_Redis_product_version: ^1\.7\..*$
 # BoM_tile_Metrics_product_version: ^1\.3\..*$
@@ -83,15 +83,15 @@ iaas_type: vsphere
 # These are used for uploading, staging and deploying product files on Operations Manager.
 # These are common parameters for ALL types of IaaS.
 # opsman_domain_or_ip_address - do not include protocol. e.g. opsmgr.pez.pivotal.io/
-opsman_domain_or_ip_address: ((opsman_uri))
+opsman_domain_or_ip_address: 172.28.21.5 # ((opsman_uri))
 # ops manager admin user ID. e.g. admin
-opsman_admin_username: ((opsman_admin_username))
+opsman_admin_username: admin # ((opsman_admin_username))
 # Ops Manager admin password
-opsman_admin_password: ((opsman_admin_password))
+opsman_admin_password: welcome1 #((opsman_admin_password))
 # encryption passphrase for ops manager VM recovery
-opsman_passphrase: ((opsman_passphrase))
+opsman_passphrase: welcome1 # ((opsman_passphrase))
 # ops manager ssh password (ubuntu user ssh password)
-opsman_ssh_password: ((opsman_ssh_password))
+opsman_ssh_password: welcome1 #((opsman_ssh_password))
 # Interval to check on new releases from Pivotal Network. eg. 2h, 3h45m, 3000s
 check_new_opsman_every: 1h
 # The interval to check Pivotal Network for updates to the product file.
