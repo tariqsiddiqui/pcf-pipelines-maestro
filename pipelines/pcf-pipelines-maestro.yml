@@ -3,7 +3,7 @@ resources:
   type: git
   source:
     #uri: {{maestro_project_url}}
-    uri: https://github.com/pivotalservices/pcf-pipelines-maestro
+    uri: https://github.com/tariqsiddiqui/pcf-pipelines-maestro
     # username: { { git_token }  }
     # password: x-oauth-basic
 

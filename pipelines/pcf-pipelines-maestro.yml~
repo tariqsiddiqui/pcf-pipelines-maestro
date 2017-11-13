@@ -23,6 +23,6 @@ jobs:
     file: pcf-pipelines-maestro/tasks/maestro/task.yml
     params:
       MAIN_CONCOURSE_URL: http://172.28.21.80:8080/ #{{concourse_url}}
-      MAIN_CONCOURSE_USERNAME: admin # {{concourse_main_userid}}
-      MAIN_CONCOURSE_PASSWORD: password # {{concourse_main_pass}}
+      MAIN_CONCOURSE_USERNAME: ecsteam # {{concourse_main_userid}}
+      MAIN_CONCOURSE_PASSWORD: ecsteam # {{concourse_main_pass}}
       MAIN_CONCOURSE_SKIP_SSL: yes #{{concourse_skip_ssl_verification}}
