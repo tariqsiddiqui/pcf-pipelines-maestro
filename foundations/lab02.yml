@@ -16,7 +16,7 @@
 # ********************* PCF tiles upgrade *****
 #BoM_tile_ERT_product_version: ^1\.10\..*$
 # BoM_tile_IsolationSegment_product_version: ^1\.11\..*$
-#BoM_tile_MySQL_product_version: ^1\.9\..*$
+BoM_tile_MySQL_product_version: ^1\.9\..*$
 # BoM_tile_RabbitMQ_product_version: ^1\.7\..*$
 # BoM_tile_Redis_product_version: ^1\.7\..*$
 # BoM_tile_Metrics_product_version: ^1\.3\..*$
