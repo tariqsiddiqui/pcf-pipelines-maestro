@@ -49,7 +49,7 @@ BoM_tile_MySQL_product_version: ^1\.9\..*$
 # BoM_bp_tc_buildpack_candidate: tc Server Buildpack 3.16
 # BoM_bp_tc_buildpack_current: tc Server Buildpack 3.15
 # ********************* Stemcell upgrade - when an adhoc stemcell upgrade is required, as stemcell upgrades are automatically done along with Tiles upgrades ****
-# BoM_stemcell_version: 3263.24
+BoM_stemcell_version: 3421.31
 
 # ==============================================================================
 # ======== SECTION 2 - Pipelines customization options =========================
