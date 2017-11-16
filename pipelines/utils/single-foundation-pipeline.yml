@@ -16,7 +16,7 @@ resources:
   source:
     uri: {{pcf_pipelines_project_url}}
     branch: master
-    private_key: {{git_private_key}}
+#     private_key: {{git_private_key}}
 # PCF-PIPELINES-GIT---
 # PCF-PIPELINES-PIVNET+++
 - name: pcf-pipelines-tarball
@@ -31,7 +31,7 @@ resources:
   type: git
   source:
    uri: {{maestro_project_url}}
-   private_key: {{git_maestro_private_key}}
+#   private_key: {{git_maestro_private_key}}
    paths:
      - foundations/FOUNDATION-NAME.yml
 

@@ -11,13 +11,13 @@ resources:
   source:
     uri: {{pcf_pipelines_project_url}}
     branch: master
-    #private_key: {{git_private_key}}
+#   private_key: {{git_private_key}}
 
 - name: pcf-pipelines-maestro
   type: git
   source:
    uri: {{maestro_project_url}}
-   #private_key: {{git_maestro_private_key}}
+#  private_key: {{git_maestro_private_key}}
 
 jobs:
 - name: Get-and-Upload-Stemcell
