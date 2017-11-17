@@ -11,7 +11,7 @@ resources:
   type: git
   source:
     uri: https://github.com/pivotal-cf/pcf-pipelines  #{{pcf_pipelines_project_url}}
-    #tag_filter: {{pcf-pipelines-release-or-tag}}
+    tag_filter: {{pcf-pipelines-release-or-tag}}
 
 jobs:
 - name: orchestrate-pipelines
