@@ -34,8 +34,8 @@ BoM_tile_JMXBridge_product_version: ^1\.8\..*$
 # BoM_bp_java_buildpack_offline_current: Java Buildpack 3.12
 # BoM_bp_binary_buildpack_candidate: Binary 1.0.12
 # BoM_bp_binary_buildpack_current: Binary 1.0.11
-BoM_bp_dotnet_core_buildpack_candidate: .NET Core 1.0.33
-BoM_bp_dotnet_core_buildpack_current: .NET Core 1.0.32
+# BoM_bp_dotnet_core_buildpack_candidate: .NET Core 1.0.33
+# BoM_bp_dotnet_core_buildpack_current: .NET Core 1.0.32
 # BoM_bp_nodejs_buildpack_candidate: NodeJS 1.5.34
 # BoM_bp_nodejs_buildpack_current: NodeJS 1.5.32
 # BoM_bp_php_buildpack_candidate: PHP 4.3.31
